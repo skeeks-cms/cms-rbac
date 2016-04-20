@@ -12,6 +12,7 @@
 namespace skeeks\cms\rbac\controllers;
 
 use skeeks\cms\helpers\RequestResponse;
+use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
 use skeeks\cms\rbac\models\AuthItem;
 use skeeks\cms\rbac\models\searchs\AuthItem as AuthItemSearch;
 use skeeks\cms\modules\admin\actions\AdminAction;
@@ -39,20 +40,16 @@ class AdminRoleController extends AdminModelEditorController
         $this->modelShowAttribute     = "name";
         $this->modelPkAttribute       = "name";
         $this->modelClassName         = Role::className();
-
         parent::init();
     }
-
     public function actions()
     {
         return ArrayHelper::merge(parent::actions(), [
-
             'index' =>
             [
                 'class'     => AdminAction::className(),
                 'callback'  => [$this, 'actionIndex']
             ],
-
             'view' =>
             [
                 "class"     => AdminOneModelEditAction::className(),
@@ -60,23 +57,18 @@ class AdminRoleController extends AdminModelEditorController
                 "icon"      => "glyphicon glyphicon-eye-open",
                 "callback"  => [$this, "actionView"],
             ],
-
             'create' =>
             [
                 'class'         => AdminAction::className(),
                 'callback'      => [$this, 'actionCreate']
             ],
-
-
             "update" =>
             [
                 'class'         => AdminOneModelEditAction::className(),
                 'callback'      => [$this, 'actionUpdate']
             ],
-
         ]);
     }
-
     /**
      * @return Role
      * @throws NotFoundHttpException
@@ -90,10 +82,8 @@ class AdminRoleController extends AdminModelEditorController
                 $this->_model   = $this->findModel($pk);
             }
         }
-
         return $this->_model;
     }
-
     /**
      * Lists all AuthItem models.
      * @return mixed
@@ -130,19 +120,19 @@ class AdminRoleController extends AdminModelEditorController
             if (in_array($name, $children)) {
                 continue;
             }
-            $avaliable['Roles'][$name] = $name . ' вЂ” ' . $role->description;
+            $avaliable['Roles'][$name] = $name . ' — ' . $role->description;
         }
         foreach ($authManager->getPermissions() as $name => $role) {
             if (in_array($name, $children)) {
                 continue;
             }
-            $avaliable[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' вЂ” ' . $role->description;
+            $avaliable[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $role->description;
         }
         foreach ($authManager->getChildren($id) as $name => $child) {
             if ($child->type == Item::TYPE_ROLE) {
-                $assigned['Roles'][$name] = $name  . ' вЂ” ' . $child->description;
+                $assigned['Roles'][$name] = $name  . ' — ' . $child->description;
             } else {
-                $assigned[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' вЂ” ' . $child->description;
+                $assigned[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $child->description;
             }
         }
         $avaliable = array_filter($avaliable);
@@ -158,15 +148,12 @@ class AdminRoleController extends AdminModelEditorController
     {
         $model = new AuthItem(null);
         $model->type = Item::TYPE_ROLE;
-
-
         if (\Yii::$app->request->isAjax && !\Yii::$app->request->isPjax)
         {
             $model->load(\Yii::$app->request->post());
             \Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }
-
         if ($model->load(Yii::$app->getRequest()->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->name]);
         } else {
@@ -183,16 +170,13 @@ class AdminRoleController extends AdminModelEditorController
     {
         $model = $this->model;
         $id = $model->name;
-
         $model = $this->findModel($id);
-
         if (\Yii::$app->request->isAjax && !\Yii::$app->request->isPjax)
         {
             $model->load(\Yii::$app->request->post());
             \Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }
-
         if (\Yii::$app->request->isAjax)
         {
             if ($model->load(\Yii::$app->request->post()) && $model->save())
@@ -203,11 +187,8 @@ class AdminRoleController extends AdminModelEditorController
                 \Yii::$app->getSession()->setFlash('error', \Yii::t('app', 'Failed to save'));
             }
         }
-
         return $this->render('update', ['model' => $model,]);
     }
-
-
     /**
      * Deletes an existing Game model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -216,14 +197,12 @@ class AdminRoleController extends AdminModelEditorController
     public function actionDelete()
     {
         $rr = new RequestResponse();
-
         if ($rr->isRequestAjaxPost())
         {
             try
             {
                 $model  = $this->model;
                 $id     = $model->name;
-
                 $model  = $this->findModel($id);
                 if (!in_array($model->item->name, CmsManager::protectedRoles()))
                 {
@@ -241,17 +220,14 @@ class AdminRoleController extends AdminModelEditorController
                     $rr->message = \Yii::t('app','This entry can not be deleted!');
                     $rr->success = false;
                 }
-
             } catch (\Exception $e)
             {
                 $rr->message = $e->getMessage();
                 $rr->success = false;
             }
-
             return (array) $rr;
         }
     }
-
     /**
      * Assign or remove items
      * @param string $id

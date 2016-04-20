@@ -7,7 +7,7 @@
  */
 return
 [
-    'user' =>
+    'users' =>
     [
         'items' =>
         [
@@ -16,7 +16,7 @@ return
                 "url"       => ["rbac/admin-role"],
                 "img"       => ['skeeks\cms\rbac\assets\RbacAsset', 'icons/users-role.png'],
                 'enabled'   => true,
-                'priority'  => 0,
+                'priority'  => 500,
             ],
 
             [
@@ -24,7 +24,7 @@ return
                 "url"       => ["rbac/admin-permission"],
                 "img"       => ['skeeks\cms\rbac\assets\RbacAsset', 'icons/access.png'],
                 'enabled'   => true,
-                'priority'  => 0,
+                'priority'  => 500,
             ],
         ]
     ]

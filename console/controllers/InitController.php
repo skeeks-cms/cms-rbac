@@ -5,7 +5,7 @@
  * @copyright 2010 SkeekS (СкикС)
  * @date 20.04.2016
  */
-namespace skeeks\cms\console\controllers;
+namespace skeeks\cms\rbac\console\controllers;
 use skeeks\cms\models\User;
 use skeeks\cms\modules\admin\components\UrlRule;
 use skeeks\cms\modules\admin\controllers\AdminController;

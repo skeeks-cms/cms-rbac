@@ -1,16 +1,15 @@
 <?php
 /**
- * AdminPermissionController
- *
  * @author Semenov Alexander <semenov@skeeks.com>
  * @link http://skeeks.com/
- * @copyright 2010-2014 SkeekS (Sx)
- * @date 27.01.2015
- * @since 1.0.0
+ * @copyright 2010 SkeekS (СкикС)
+ * @date 20.04.2016
  */
-namespace skeeks\cms\modules\admin\controllers;
+namespace skeeks\cms\rbac\controllers;
 use skeeks\cms\Exception;
 use skeeks\cms\helpers\RequestResponse;
+use skeeks\cms\modules\admin\controllers\AdminController;
+use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
 use skeeks\cms\rbac\models\AuthItem;
 use skeeks\cms\rbac\models\searchs\AuthItem as AuthItemSearch;
 use skeeks\cms\modules\admin\actions\AdminAction;
@@ -97,23 +96,26 @@ class AdminPermissionController extends AdminModelEditorController
                 {
                     foreach ($group['items'] as $itemData)
                     {
-                        /**
-                         * @var $controller \yii\web\Controller
-                         */
-                        list($controller, $route) = \Yii::$app->createController($itemData['url'][0]);
-                        if ($controller)
+                        if (is_array($itemData))
                         {
-                            if ($controller instanceof AdminController)
+                            /**
+                             * @var $controller \yii\web\Controller
+                             */
+                            list($controller, $route) = \Yii::$app->createController($itemData['url'][0]);
+                            if ($controller)
                             {
-                                //Привилегия доступу к админке
-                                if (!$adminAccess = $auth->getPermission($controller->permissionName))
+                                if ($controller instanceof AdminController)
                                 {
-                                    $adminAccess = $auth->createPermission($controller->permissionName);
-                                    $adminAccess->description = \Yii::t('app','Administration') . ' | ' . $controller->name;
-                                    $auth->add($adminAccess);
-                                    if ($root = $auth->getRole('root'))
+                                    //Привилегия доступу к админке
+                                    if (!$adminAccess = $auth->getPermission($controller->permissionName))
                                     {
-                                        $auth->addChild($root, $adminAccess);
+                                        $adminAccess = $auth->createPermission($controller->permissionName);
+                                        $adminAccess->description = \Yii::t('app','Administration') . ' | ' . $controller->name;
+                                        $auth->add($adminAccess);
+                                        if ($root = $auth->getRole('root'))
+                                        {
+                                            $auth->addChild($root, $adminAccess);
+                                        }
                                     }
                                 }
                             }
