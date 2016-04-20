@@ -1,0 +1,27 @@
+{
+	"name": "skeeks/cms-rbac",
+	"description": "RBAC for SkeekS CMS",
+	"keywords": ["yii", "skeeks", "framework", "component", "rbac"],
+    	"homepage": "http://cms.skeeks.com/",
+	"type": "yii2-extension",
+	"license": "GPL-3.0+",
+	"support": {
+        "issues": "http://skeeks.com/",
+        "wiki": "http://en.cms.skeeks.com/docs/",
+        "source": "https://github.com/skeeks-cms/cms-rbac"
+    },
+	"authors": [
+		{
+			"name": "Semenov Alexander",
+			"email": "semenov@skeeks.com"
+		}
+	],
+	"require": {
+		"skeeks/cms": "*"
+	},
+    "autoload": {
+        "psr-4": {
+            "skeeks\\cms\\rbac\\": ""
+        }
+    }
+}
