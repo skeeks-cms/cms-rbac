@@ -1,4 +1,5 @@
 <?php
 return [
-    'Keywords' => 'Ключевые слова',
+    "Roles"                 => "Роли",
+    "Privileges"            => "Привилегии",
 ];

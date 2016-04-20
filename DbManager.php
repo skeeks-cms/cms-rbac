@@ -47,7 +47,7 @@ class DbManager extends CmsManager
     const PART_RULES    = 'sx.rules';
 
     //По умолчанию проверяем что может роль гостя
-    public $defaultRoles = [\skeeks\cms\rbac\CmsManager::ROLE_GUEST];
+    public $defaultRoles = [self::ROLE_GUEST];
 
     /**
      * @var boolean Enable caching

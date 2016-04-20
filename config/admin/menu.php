@@ -13,7 +13,7 @@ return
         [
             [
                 "label"     => \Yii::t('skeeks/rbac', 'Roles'),
-                "url"       => ["admin/admin-role"],
+                "url"       => ["rbac/admin-role"],
                 "img"       => ['skeeks\cms\rbac\assets\RbacAsset', 'icons/users-role.png'],
                 'enabled'   => true,
                 'priority'  => 0,
@@ -21,7 +21,7 @@ return
 
             [
                 "label"     => \Yii::t('skeeks/rbac', 'Privileges'),
-                "url"       => ["admin/admin-permission"],
+                "url"       => ["rbac/admin-permission"],
                 "img"       => ['skeeks\cms\rbac\assets\RbacAsset', 'icons/access.png'],
                 'enabled'   => true,
                 'priority'  => 0,
