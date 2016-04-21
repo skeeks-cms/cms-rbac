@@ -1,4 +1,4 @@
-Agents for SkeekS CMS
+RBAC for SkeekS CMS
 ===================================
 
 Installation
@@ -9,7 +9,7 @@ The preferred way to install this extension is through [composer](http://getcomp
 Either run
 
 ```
-php composer.phar require --prefer-dist skeeks/cms-rbac "*"
+php composer.phar require --prefer-dist skeeks/rbac "*"
 ```
 
 or add
@@ -25,6 +25,14 @@ Configuration app
 
 
 ```
+
+##Links
+* [Web site](http://en.cms.skeeks.com)
+* [Web site (rus)](http://cms.skeeks.com)
+* [Author](http://skeeks.com)
+* [ChangeLog](https://github.com/skeeks-cms/cms-rbac/blob/master/CHANGELOG.md)
+
+
 
 ___
 
