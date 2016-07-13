@@ -61,7 +61,7 @@ class AuthItem extends Model
             $items = [];
             if ($this->type == Item::TYPE_PERMISSION) {
                 foreach ($authManager->getPermissions() as $name => $item) {
-                    if ($name[0] !== '/') {
+                    if (@$name[0] !== '/') {
                         $items[$name] = $item;
                     }
                 }
