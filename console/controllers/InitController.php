@@ -16,6 +16,7 @@ use yii\base\Exception;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
+use yii\helpers\FileHelper;
 use yii\helpers\Json;
 use yii\rbac\Rule;
 
@@ -407,7 +408,37 @@ class InitController extends Controller
      */
     public function loadConfig()
     {
-        $this->stdout("\tScan all extensions\n");
+
+
+        $files = \skeeks\cms\helpers\FileHelper::findExtensionsFiles(['/config/permissions.php']);
+        $files = array_unique(array_merge(
+            [
+                \Yii::getAlias('@app/config/permissions.php'),
+                \Yii::getAlias('@common/config/permissions.php'),
+            ], $files
+        ));
+
+        foreach ($files as $permisssionsFile)
+        {
+            if (file_exists($permisssionsFile))
+            {
+                $this->stdout("\t- " . $permisssionsFile);
+                $cfg = (array) include $permisssionsFile;
+                if ($cfg)
+                {
+                    $config = ArrayHelper::merge($config, $cfg);
+                    $this->stdout("(rules: " . count(ArrayHelper::getValue($cfg, 'rules', [])) . ';');
+                    $this->stdout("roles: " . count(ArrayHelper::getValue($cfg, 'roles', [])) . ';');
+                    $this->stdout("permissions: " . count(ArrayHelper::getValue($cfg, 'permissions', [])) . ';)');
+                    $this->stdout("\n");
+                } else
+                {
+                    $this->stdout("(is empty data)");
+                }
+            }
+        }
+
+        /*$this->stdout("\tScan all extensions\n");
         $config = [];
         foreach (\Yii::$app->extensions as $code => $data)
         {
@@ -434,7 +465,10 @@ class InitController extends Controller
                     }
                 }
             }
-        }
+        }*/
+
+
+
         $this->stdout("\tAll config is ready: ", Console::FG_GREEN);
         $this->stdout(" (rules: " . count(ArrayHelper::getValue($config, 'rules', [])) . ';');
         $this->stdout(" roles: " . count(ArrayHelper::getValue($config, 'roles', [])) . ';');
