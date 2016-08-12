@@ -101,7 +101,8 @@ class AdminPermissionController extends AdminModelEditorController
                             /**
                              * @var $controller \yii\web\Controller
                              */
-                            list($controller, $route) = \Yii::$app->createController($itemData['url'][0]);
+                            list($controller, $route) = \Yii::$app->createController(@$itemData['url'][0]);
+
                             if ($controller)
                             {
                                 if ($controller instanceof AdminController)
