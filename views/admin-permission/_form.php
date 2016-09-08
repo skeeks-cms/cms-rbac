@@ -43,7 +43,7 @@ use skeeks\cms\modules\admin\widgets\ActiveForm;
         ])
     ?>
 
-    <?= $form->field($model, 'data')->textarea(['rows' => 6, 'readonly' => 'readonly'])->label(\Yii::t('app','Data')) ?>
+    <?/*= $form->field($model, 'data')->textarea(['rows' => 6, 'readonly' => 'readonly'])->label(\Yii::t('app','Data')) */?>
 
     <?= $form->buttonsCreateOrUpdate($model); ?>
 

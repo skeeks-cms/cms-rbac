@@ -8,6 +8,7 @@
 
 namespace skeeks\cms\rbac\models;
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\rbac\Item;
 use yii\helpers\Json;
 /**
@@ -58,6 +59,7 @@ class AuthItem extends \yii\base\Model
             [['ruleName'], 'in',
                 'range' => array_keys(Yii::$app->authManager->getRules()),
                 'message' => 'Rule not exists'],
+            //[['name'], 'unique', 'targetAttribute' => array_keys(ArrayHelper::map(\Yii::$app->authManager->getRoles(), 'name', 'name')) ],
             [['name', 'type'], 'required'],
             [['type'], 'integer'],
             [['description', 'data', 'ruleName'], 'default'],

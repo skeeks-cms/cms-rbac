@@ -126,7 +126,11 @@ class AdminRoleController extends AdminModelEditorController
             if (in_array($name, $children)) {
                 continue;
             }
-            $avaliable[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $role->description;
+
+            if (isset($name[0]))
+            {
+                $avaliable[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $role->description;
+            }
         }
         foreach ($authManager->getChildren($id) as $name => $child) {
             if ($child->type == Item::TYPE_ROLE) {
