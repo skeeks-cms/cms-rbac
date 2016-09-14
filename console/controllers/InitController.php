@@ -418,6 +418,8 @@ class InitController extends Controller
             ], $files
         ));
 
+        $config = [];
+
         foreach ($files as $permisssionsFile)
         {
             if (file_exists($permisssionsFile))
