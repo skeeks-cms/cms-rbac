@@ -1,6 +1,4 @@
 <?php
-use yii\helpers\Html;
-use skeeks\cms\modules\admin\widgets\GridView;
 /**
  * @var yii\web\View $this
  * @var yii\data\ActiveDataProvider $dataProvider
@@ -9,7 +7,12 @@ use skeeks\cms\modules\admin\widgets\GridView;
 ?>
 <div class="role-index">
 
+<? $pjax = \skeeks\cms\modules\admin\widgets\Pjax::begin(); ?>
 
+    <?php echo $this->render('_search', [
+        'searchModel'   => $searchModel,
+        'dataProvider'  => $dataProvider
+    ]); ?>
 
     <?php
 
@@ -17,6 +20,7 @@ use skeeks\cms\modules\admin\widgets\GridView;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'adminController' => $controller,
+        'pjax'              => $pjax,
         'settingsData' =>
         [
             'orderBy' => ''
@@ -25,11 +29,11 @@ use skeeks\cms\modules\admin\widgets\GridView;
 
             [
                 'attribute' => 'name',
-                'label' => Yii::t('app', 'Name'),
+                'label' => \Yii::t('app', 'Name'),
             ],
             [
                 'attribute' => 'description',
-                'label' => Yii::t('app', 'Description'),
+                'label' => \Yii::t('app', 'Description'),
             ],
 
             /*['class' => 'yii\grid\ActionColumn',],*/
@@ -37,5 +41,5 @@ use skeeks\cms\modules\admin\widgets\GridView;
     ]);
 
     ?>
-
+<? $pjax::end(); ?>
 </div>
