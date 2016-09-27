@@ -1,7 +1,7 @@
 Changelog
 ==============
 
-1.0.4.pre
+1.0.4
 -----------------
  * Fixed #35 [https://github.com/skeeks-cms/cms/issues/35] (Errors in JavaScript code in the behavior of the widget in the admin table)
 
