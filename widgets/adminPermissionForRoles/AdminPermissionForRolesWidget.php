@@ -25,6 +25,7 @@ use yii\rbac\Permission;
  */
 class AdminPermissionForRolesWidget extends Widget
 {
+    public static $autoIdPrefix = 'AdminPermissionForRolesWidget';
     /**
      * @var string Привилегия которую необходимо назначать, и настраивать.
      */
@@ -32,7 +33,7 @@ class AdminPermissionForRolesWidget extends Widget
     public $permissionDescription = "";
     public $label                 = "";
     public $items                 = [];
-    public $defaultRoles          = [CmsManager::ROLE_ROOT];
+    public $notClosedRoles        = [CmsManager::ROLE_ROOT];
 
     /**
      * @var bool Проверят разрешение и создавать если его нет
@@ -60,9 +61,9 @@ class AdminPermissionForRolesWidget extends Widget
         }
 
 
-        if ($this->defaultRoles && $permission)
+        if ($this->notClosedRoles && $permission)
         {
-            foreach ($this->defaultRoles as $roleName)
+            foreach ($this->notClosedRoles as $roleName)
             {
                 if ($role = \Yii::$app->authManager->getRole($roleName))
                 {
@@ -91,6 +92,7 @@ class AdminPermissionForRolesWidget extends Widget
         return Json::encode([
             'id'                                => $this->id,
             'permissionName'                    => $this->permissionName,
+            'notClosedRoles'                    => $this->notClosedRoles,
             'backend'                           => Url::to(['/rbac/admin-permission/permission-for-role', UrlRule::ADMIN_PARAM_NAME => UrlRule::ADMIN_PARAM_VALUE]),
         ]);
     }

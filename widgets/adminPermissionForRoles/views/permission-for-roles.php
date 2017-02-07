@@ -30,6 +30,13 @@
     {
         sx.classes.PermissionForRoles = sx.classes.Component.extend({
 
+            _init: function()
+            {
+                this._requestRoles = this.get('notClosedRoles', []);
+                console.log("_init");
+                console.log(this._requestRoles);
+            },
+
             getJQueryWrapper: function()
             {
                 return $('#' + this.get('id'));
@@ -53,19 +60,37 @@
             save: function()
             {
                 //sx.block(this.jQueryWrapper);
-                this.AjaxQuery = sx.ajax.preparePostQuery(this.get('backend', ''), {
+                var requestRoles = [];
+                requestRoles = this._requestRoles;
+                console.log(requestRoles);
+
+                var ElementValues = this.getJQuerySelect().val();
+                if (ElementValues)
+                {
+                    _.each(ElementValues, function(value, key)
+                    {
+                        if (_.indexOf(requestRoles, value) == -1)
+                        {
+                            requestRoles.push(value);
+                        }
+                    });
+                }
+
+                console.log(requestRoles);
+
+                var AjaxQuery = sx.ajax.preparePostQuery(this.get('backend', ''), {
                     'permissionName'    : this.get('permissionName'),
-                    'roles'             : this.getJQuerySelect().val()
+                    'roles'             : requestRoles
                 });
 
-                new sx.classes.AjaxHandlerStandartRespose(this.AjaxQuery, {
+                new sx.classes.AjaxHandlerStandartRespose(AjaxQuery, {
                     'blocker'       : new sx.classes.Blocker(this.getJQueryWrapper()),
                     'enableBlocker' : true
                 });
 
-                new sx.classes.AjaxHandlerNoLoader(this.AjaxQuery);
+                new sx.classes.AjaxHandlerNoLoader(AjaxQuery);
 
-                this.AjaxQuery.execute();
+                AjaxQuery.execute();
             }
         });
 
