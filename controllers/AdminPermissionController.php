@@ -381,7 +381,7 @@ class AdminPermissionController extends AdminModelEditorController
         }
 
         $rolesValues = (array) \Yii::$app->request->post('roles');
-        $rolesValues[] = CmsManager::ROLE_ROOT; //у root пользователя нельзя отобрать права
+        ///$rolesValues[] = CmsManager::ROLE_ROOT; //у root пользователя нельзя отобрать права
 
         foreach (\Yii::$app->authManager->getRoles() as $role)
         {

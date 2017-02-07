@@ -10,6 +10,7 @@ use skeeks\cms\components\Cms;
 use skeeks\cms\helpers\UrlHelper;
 use skeeks\cms\modules\admin\components\UrlRule;
 use skeeks\cms\rbac\CmsManager;
+use skeeks\cms\rbac\widgets\adminPermissionForRoles\assets\AdminPermissionForRolesWidgetAsset;
 use yii\base\Widget;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -79,6 +80,8 @@ class AdminPermissionForRolesWidget extends Widget
 
     public function run()
     {
+        AdminPermissionForRolesWidgetAsset::register($this->view);
+
         return $this->render('permission-for-roles', [
             'widget' => $this,
         ]);

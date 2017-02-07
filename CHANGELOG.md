@@ -3,6 +3,7 @@ Changelog
 
 1.1.0.pre
 -----------------
+ * Added \skeeks\cms\rbac\widgets\adminPermissionForRoles\AdminPermissionForRolesWidget
  * Removed \skeeks\cms\widgets\rbac\PermissionForRoles
 
 1.0.4
