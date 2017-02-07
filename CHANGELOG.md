@@ -1,6 +1,10 @@
 Changelog
 ==============
 
+1.1.0.pre
+-----------------
+ * Removed \skeeks\cms\widgets\rbac\PermissionForRoles
+
 1.0.4
 -----------------
  * Fixed #35 [https://github.com/skeeks-cms/cms/issues/35] (Errors in JavaScript code in the behavior of the widget in the admin table)
