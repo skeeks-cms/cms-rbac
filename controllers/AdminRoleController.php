@@ -136,7 +136,13 @@ class AdminRoleController extends AdminModelEditorController
             if ($child->type == Item::TYPE_ROLE) {
                 $assigned['Roles'][$name] = $name  . ' — ' . $child->description;
             } else {
-                $assigned[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $child->description;
+                if (isset($name[0]))
+                {
+                    $assigned[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $child->description;
+                } else
+                {
+                    $assigned['Permission'][$name] = $name  . ' — ' . $child->description;
+                }
             }
         }
         $avaliable = array_filter($avaliable);
@@ -238,10 +244,12 @@ class AdminRoleController extends AdminModelEditorController
      * @param string $action
      * @return array
      */
-    public function actionAssign($id, $action)
+    public function actionAssign()
     {
+        $action = Yii::$app->getRequest()->get('action');
+        $id = Yii::$app->getRequest()->get('id');
         $post = Yii::$app->getRequest()->post();
-        $roles = $post['roles'];
+        $roles = ArrayHelper::getValue($post, 'roles');
         $manager = Yii::$app->getAuthManager();
         $parent = $manager->getRole($id);
         $error = [];
@@ -256,15 +264,19 @@ class AdminRoleController extends AdminModelEditorController
                 }
             }
         } else {
-            foreach ($roles as $role) {
-                $child = $manager->getRole($role);
-                $child = $child ? : $manager->getPermission($role);
-                try {
-                    $manager->removeChild($parent, $child);
-                } catch (\Exception $e) {
-                    $error[] = $e->getMessage();
+            if ($roles)
+            {
+                foreach ($roles as $role) {
+                    $child = $manager->getRole($role);
+                    $child = $child ? : $manager->getPermission($role);
+                    try {
+                        $manager->removeChild($parent, $child);
+                    } catch (\Exception $e) {
+                        $error[] = $e->getMessage();
+                    }
                 }
             }
+
         }
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         return [$this->actionRoleSearch($id, 'avaliable', $post['search_av']),
@@ -302,7 +314,13 @@ class AdminRoleController extends AdminModelEditorController
                     continue;
                 }
                 if (empty($term) or strpos($name, $term) !== false) {
-                    $result[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name;
+                    if (isset($name[0]))
+                    {
+                        $result[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name;
+                    } else
+                    {
+                        $result['Permission'][$name] = $name;
+                    }
                 }
             }
         } else {

@@ -1,6 +1,10 @@
 Changelog
 ==============
 
+1.1.1.pre
+-----------------
+ * Fixed bugs
+
 1.1.0
 -----------------
  * Added \skeeks\cms\rbac\widgets\adminPermissionForRoles\AdminPermissionForRolesWidget
