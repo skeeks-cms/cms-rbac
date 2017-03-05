@@ -3,6 +3,7 @@ Changelog
 
 1.1.1.pre
 -----------------
+ * Fixed admin url
  * Fixed bugs
 
 1.1.0
