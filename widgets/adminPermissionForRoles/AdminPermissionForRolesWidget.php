@@ -96,7 +96,7 @@ class AdminPermissionForRolesWidget extends Widget
             'id'                                => $this->id,
             'permissionName'                    => $this->permissionName,
             'notClosedRoles'                    => $this->notClosedRoles,
-            'backend'                           => Url::to(['/rbac/admin-permission/permission-for-role', UrlRule::ADMIN_PARAM_NAME => UrlRule::ADMIN_PARAM_VALUE]),
+            'backend'                           => Url::to(['/rbac/admin-permission/permission-for-role']),
         ]);
     }
 
