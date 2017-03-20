@@ -28,6 +28,11 @@ class AuthorRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        return isset($params['model']) ? $params['model']->created_by == $user : false;
+        if (isset($params['model']) && isset($params['model']->created_by))
+        {
+            return $params['model']->created_by == $user;
+        }
+
+        return false;
     }
 }

@@ -1,8 +1,10 @@
 Changelog
 ==============
 
-1.1.1.pre
+2.0.0.pre
 -----------------
+ * Removed constants
+ * Fixed notice
  * Fixed admin url
  * Fixed bugs
 

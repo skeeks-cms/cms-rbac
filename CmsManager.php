@@ -27,20 +27,6 @@ class CmsManager extends \yii\rbac\DbManager
     const PERMISSION_ADMIN_DASHBOARDS_EDIT          = 'cms.admin-dashboards-edit';
     const PERMISSION_USER_FULL_EDIT                 = 'cms.user-full-edit';
 
-    /**
-     * Редактирование служебных данных (наприме id и url и т.д.)
-     */
-    const PERMISSION_ALLOW_MODEL_CREATE                 = 'cms.model-create';
-
-    const PERMISSION_ALLOW_MODEL_UPDATE                 = 'cms.model-update';
-    const PERMISSION_ALLOW_MODEL_UPDATE_ADVANCED        = 'cms.model-update-advanced';
-    const PERMISSION_ALLOW_MODEL_DELETE                 = 'cms.model-delete';
-
-    const PERMISSION_ALLOW_MODEL_UPDATE_OWN                 = 'cms.model-update-own';
-    const PERMISSION_ALLOW_MODEL_UPDATE_ADVANCED_OWN        = 'cms.model-update-advanced-own';
-    const PERMISSION_ALLOW_MODEL_DELETE_OWN                 = 'cms.model-delete-own';
-
-
     const PERMISSION_ELFINDER_USER_FILES                    = 'cms.elfinder-user-files';
     const PERMISSION_ELFINDER_COMMON_PUBLIC_FILES           = 'cms.elfinder-common-public-files';
     const PERMISSION_ELFINDER_ADDITIONAL_FILES              = 'cms.elfinder-additional-files';
