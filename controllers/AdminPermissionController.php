@@ -6,8 +6,13 @@
  * @date 20.04.2016
  */
 namespace skeeks\cms\rbac\controllers;
+use skeeks\cms\backend\BackendAction;
+use skeeks\cms\backend\BackendController;
+use skeeks\cms\backend\IBackendComponent;
+use skeeks\cms\backend\IHasInfoActions;
 use skeeks\cms\Exception;
 use skeeks\cms\helpers\RequestResponse;
+use skeeks\cms\IHasPermissions;
 use skeeks\cms\modules\admin\controllers\AdminController;
 use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
 use skeeks\cms\rbac\models\AuthItem;
@@ -84,52 +89,97 @@ class AdminPermissionController extends AdminModelEditorController
         }
         return $this->_model;
     }
+
     public function actionUpdateData()
     {
         $rr = new RequestResponse();
         if ($rr->isRequestAjaxPost())
         {
-            $auth = Yii::$app->authManager;
-            foreach (\Yii::$app->admin->menu->getData() as $group)
+            foreach (\Yii::$app->getComponents(true) as $id => $component)
             {
-                if (is_array($group))
-                {
-                    foreach ($group['items'] as $itemData)
-                    {
-                        if (is_array($itemData))
-                        {
-                            /**
-                             * @var $controller \yii\web\Controller
-                             */
-                            list($controller, $route) = \Yii::$app->createController(@$itemData['url'][0]);
+                $component = \Yii::$app->get($id);
 
-                            if ($controller)
-                            {
-                                if ($controller instanceof AdminController)
-                                {
-                                    //Привилегия доступу к админке
-                                    if (!$adminAccess = $auth->getPermission($controller->permissionName))
-                                    {
-                                        $adminAccess = $auth->createPermission($controller->permissionName);
-                                        $adminAccess->description = \Yii::t('app','Administration') . ' | ' . $controller->name;
-                                        $auth->add($adminAccess);
-                                        if ($root = $auth->getRole('root'))
-                                        {
-                                            $auth->addChild($root, $adminAccess);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                if($component instanceof IBackendComponent)
+                {
+                    foreach ($component->getMenu()->data as $itemData)
+                    {
+                        $this->_initMenuItem($itemData);
                     }
+
                 }
             }
+
             $rr->success = true;
             $rr->message = \Yii::t("app","Update completed");
             return $rr;
         }
         return [];
     }
+
+
+
+
+
+    protected function _initMenuItem($itemData = null)
+    {
+        if (!is_array($itemData))
+        {
+            return false;
+        }
+
+        if ($url = ArrayHelper::getValue($itemData, 'url'))
+        {
+
+            if (is_array($url))
+            {
+                $url = $url[0];
+                if (!$url || !is_string($url))
+                {
+                    return false;
+                }
+
+                /**
+                 * @var $controller \yii\web\Controller|IHasPermissions
+                 */
+                list($controller, $route) = \Yii::$app->createController($url);
+
+                if ($controller)
+                {
+                    if ($controller instanceof IHasPermissions)
+                    {
+                        $controller->isAllow;
+
+                        if ($controller instanceof IHasInfoActions)
+                        {
+                            if ($actions = $controller->getAllActions())
+                            {
+                                foreach ($actions as $action)
+                                {
+                                    $action->isAllow;
+                                }
+                            }
+                        }
+
+
+                    }
+                }
+            }
+        }
+
+        if ($items = ArrayHelper::getValue($itemData, 'items'))
+        {
+            if (is_array($items))
+            {
+                foreach ($items as $item)
+                {
+                    $this->_initMenuItem($item);
+                }
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * Lists all AuthItem models.
      * @return mixed

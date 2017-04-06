@@ -6,6 +6,9 @@
  * @date 20.04.2016
  */
 namespace skeeks\cms\rbac\console\controllers;
+use skeeks\cms\admin\AdminComponent;
+use skeeks\cms\backend\IBackendComponent;
+use skeeks\cms\IHasPermissions;
 use skeeks\cms\models\User;
 use skeeks\cms\modules\admin\components\UrlRule;
 use skeeks\cms\modules\admin\controllers\AdminController;
@@ -38,7 +41,7 @@ class InitController extends Controller
     public function actionInit()
     {
         $this->initRbacModules();
-        $this->initAdminData();
+        $this->initBackendData();
         $this->initRootAssigning();
         $this->initRootUser();
     }
@@ -52,47 +55,49 @@ class InitController extends Controller
 
     public function initRootAssigning()
     {
+        $this->stdout("Init root assigning \n", Console::BOLD);
         $roleRoot = \Yii::$app->authManager->getRole(CmsManager::ROLE_ROOT);
         foreach (\Yii::$app->authManager->getPermissions() as $permission)
         {
-            $this->stdout("\t\tassign root permisssion: " . $permission->name);
+            //$this->stdout("\t\tassign root permisssion: " . $permission->name);
             try
             {
                 \Yii::$app->authManager->addChild($roleRoot, $permission);
-                $this->stdout(' - success' . "\n");
+                //$this->stdout(' - success' . "\n");
             } catch(\Exception $e)
             {
-                $this->stdout(' - already exist' . "\n");
+                //$this->stdout(' - already exist' . "\n");
             }
         };
+
         foreach (\Yii::$app->authManager->getRoles() as $role)
         {
-            $this->stdout("\t\tassign root role: " . $role->name);
+            //$this->stdout("\t\tassign root role: " . $role->name);
             try
             {
                 \Yii::$app->authManager->addChild($roleRoot, $role);
-                $this->stdout(' - success' . "\n");
+                //$this->stdout(' - success' . "\n");
             } catch(\Exception $e)
             {
-                $this->stdout(' - already exist' . "\n");
+                //$this->stdout(' - already exist' . "\n");
             }
         };
     }
     /**
-     * Получение rules, permissions adn data по всем расширениям и модулям
+     * Получение rules, permissions and data по всем расширениям и модулям
      */
     public function initRbacModules()
     {
         $this->stdout("Init rules, permissions adn data from all modules and extensions\n\n", Console::BOLD);
-        $this->stdout("1) Loading config\n", Console::FG_YELLOW);
+        $this->stdout("\t1) Loading config\n", Console::FG_YELLOW);
         if (!$config = $this->loadConfig())
         {
             $this->stdout("Start script: not found data for rbac migrations", Console::FG_RED);
             die;
         }
-        $this->stdout("2) Start migrations\n", Console::FG_YELLOW);
+        $this->stdout("\t2) Start migrations\n", Console::FG_YELLOW);
         $this->applyConfig($config);
-        $this->stdout("3) Assigning roles, privileges, rules\n", Console::FG_YELLOW);
+        $this->stdout("\t3) Assigning roles, privileges, rules\n", Console::FG_YELLOW);
         $this->applyAssigningConfig($config);
     }
     /**
@@ -158,16 +163,15 @@ class InitController extends Controller
             {
                 foreach ($childRoles as $name)
                 {
-                    $this->stdout("\t\tassign child role: " . $name);
                     if ($roleChild = \Yii::$app->authManager->getRole($name))
                     {
                         try
                         {
                             \Yii::$app->authManager->addChild($role, $roleChild);
-                            $this->stdout(' - success' . "\n");
+                            $this->stdout("\t\tassign child role: " . $name . ' - success' . "\n", Console::FG_GREEN);
                         } catch(\Exception $e)
                         {
-                            $this->stdout(' - already exist'. "\n");
+                            //$this->stdout(' - already exist'. "\n");
                         }
                     }
                 }
@@ -179,16 +183,15 @@ class InitController extends Controller
             {
                 foreach ($childPermissions as $name)
                 {
-                    $this->stdout("\t\tassign child permission: " . $name);
                     if ($permissionChild = \Yii::$app->authManager->getPermission($name))
                     {
                         try
                         {
                             \Yii::$app->authManager->addChild($role, $permissionChild);
-                            $this->stdout(' - success' . "\n");
+                            $this->stdout("\t\tassign child permission: " . $name . " - success" . "\n", Console::FG_GREEN);
                         } catch(\Exception $e)
                         {
-                            $this->stdout(' - already exist'. "\n");
+                            //$this->stdout(' - already exist'. "\n");
                         }
                     }
                 }
@@ -225,16 +228,15 @@ class InitController extends Controller
             {
                 foreach ($childRoles as $name)
                 {
-                    $this->stdout("\t\tassign child role: " . $name);
                     if ($roleChild = \Yii::$app->authManager->getRole($name))
                     {
                         try
                         {
                             \Yii::$app->authManager->addChild($permission, $roleChild);
-                            $this->stdout(' - success' . "\n");
+                            $this->stdout("\t\tassign child role: " . $name . ' - success' . "\n", Console::FG_GREEN);
                         } catch(\Exception $e)
                         {
-                            $this->stdout(' - already exist' . "\n");
+                            //$this->stdout(' - already exist' . "\n");
                         }
                     }
                 }
@@ -246,16 +248,15 @@ class InitController extends Controller
             {
                 foreach ($childPermissions as $name)
                 {
-                    $this->stdout("\t\tassign child permission: " . $name);
                     if ($permissionChild = \Yii::$app->authManager->getPermission($name))
                     {
                         try
                         {
                             \Yii::$app->authManager->addChild($permission, $permissionChild);
-                            $this->stdout(' - success' . "\n");
+                            $this->stdout("\t\tassign child permission: " . $name . ' - success' . "\n", Console::FG_GREEN);
                         } catch(\Exception $e)
                         {
-                            $this->stdout(' - already exist' . "\n");
+                            //$this->stdout(' - already exist' . "\n");
                         }
                     }
                 }
@@ -341,10 +342,10 @@ class InitController extends Controller
             {
                 if ($rule = $this->_applyRule($data))
                 {
-                    $this->stdout("\t\t- success: " . $rule->name . "\n");
+                    //$this->stdout("\t\t- success: " . $rule->name . "\n");
                 } else
                 {
-                    $this->stdout("\t\t- error config rule: " . Json::encode($data) . "\n");
+                    //$this->stdout("\t\t- error config rule: " . Json::encode($data) . "\n");
                 }
             }
         }
@@ -355,10 +356,10 @@ class InitController extends Controller
             {
                 if ($role = $this->_applyRole($data))
                 {
-                    $this->stdout("\t\t- success: " . $role->name . "\n");
+                    //$this->stdout("\t\t- success: " . $role->name . "\n");
                 } else
                 {
-                    $this->stdout("\t\t- error config role: " . Json::encode($data) . "\n");
+                    //$this->stdout("\t\t- error config role: " . Json::encode($data) . "\n");
                 }
             }
         }
@@ -369,10 +370,10 @@ class InitController extends Controller
             {
                 if ($permission = $this->_applyPermission($data))
                 {
-                    $this->stdout("\t\t- success: " . $permission->name . "\n");
+                    //$this->stdout("\t\t- success: " . $permission->name . "\n");
                 } else
                 {
-                    $this->stdout("\t\t- error config role: " . Json::encode($data) . "\n");
+                    //$this->stdout("\t\t- error config role: " . Json::encode($data) . "\n");
                 }
             }
         }
@@ -386,7 +387,7 @@ class InitController extends Controller
             {
                 if ($role = $this->_assignRole($data))
                 {
-                    $this->stdout("\t- success assigned: " . $role->name . "\n");
+                    //$this->stdout("\t- success assigned: " . $role->name . "\n");
                 }
             }
         }
@@ -397,7 +398,7 @@ class InitController extends Controller
             {
                 if ($permission = $this->_assignPermission($data))
                 {
-                    $this->stdout("\t- success assigned: " . $permission->name . "\n");
+                    //$this->stdout("\t- success assigned: " . $permission->name . "\n");
                 }
             }
         }
@@ -429,8 +430,8 @@ class InitController extends Controller
                 if ($cfg)
                 {
                     $config = ArrayHelper::merge($config, $cfg);
-                    $this->stdout("(rules: " . count(ArrayHelper::getValue($cfg, 'rules', [])) . ';');
-                    $this->stdout("roles: " . count(ArrayHelper::getValue($cfg, 'roles', [])) . ';');
+                    $this->stdout("(rules: " . count(ArrayHelper::getValue($cfg, 'rules', [])) . '; ');
+                    $this->stdout("roles: " . count(ArrayHelper::getValue($cfg, 'roles', [])) . '; ');
                     $this->stdout("permissions: " . count(ArrayHelper::getValue($cfg, 'permissions', [])) . ';)');
                     $this->stdout("\n");
                 } else
@@ -439,37 +440,6 @@ class InitController extends Controller
                 }
             }
         }
-
-        /*$this->stdout("\tScan all extensions\n");
-        $config = [];
-        foreach (\Yii::$app->extensions as $code => $data)
-        {
-            if ($data['alias'])
-            {
-                foreach ($data['alias'] as $code => $path)
-                {
-                    $permisssionsFile = $path . '/config/permissions.php';
-                    if (file_exists($permisssionsFile))
-                    {
-                        $this->stdout("\t- " . $permisssionsFile);
-                        $cfg = (array) include $permisssionsFile;
-                        if ($cfg)
-                        {
-                            $config = ArrayHelper::merge($config, $cfg);
-                            $this->stdout("(rules: " . count(ArrayHelper::getValue($cfg, 'rules', [])) . ';');
-                            $this->stdout("roles: " . count(ArrayHelper::getValue($cfg, 'roles', [])) . ';');
-                            $this->stdout("permissions: " . count(ArrayHelper::getValue($cfg, 'permissions', [])) . ';)');
-                            $this->stdout("\n");
-                        } else
-                        {
-                            $this->stdout("(is empty data)");
-                        }
-                    }
-                }
-            }
-        }*/
-
-
 
         $this->stdout("\tAll config is ready: ", Console::FG_GREEN);
         $this->stdout(" (rules: " . count(ArrayHelper::getValue($config, 'rules', [])) . ';');
@@ -496,50 +466,96 @@ class InitController extends Controller
         }
         return $this;
     }
-    public function initAdminData()
+
+
+    public function initBackendData()
     {
+        $this->stdout("Init backend data\n", Console::BOLD);
+
         $auth = Yii::$app->authManager;
-        foreach (\Yii::$app->admin->menu->getData() as $group)
+        //print_r(\Yii::getAlias('@vendor/skeeks/cms/app-web-create.php'));die;
+
+        /*$config = \yii\helpers\ArrayHelper::merge(
+            (array) require( \Yii::getAlias('@vendor/skeeks/cms/tmp-config-extensions.php') ),
+            (array) require( \Yii::getAlias('@vendor/skeeks/cms/app-config.php') )
+        );
+        \Yii::endProfile('Load config app');
+
+        return new yii\web\Application($config);
+
+        $webApplication = include_once \Yii::getAlias('@vendor/skeeks/cms/app-web-create.php');
+        var_dump($webApplication);die;*/
+
+        foreach (Yii::$app->getComponents(true) as $id => $component)
         {
-            if (is_array($group))
+            $component = \Yii::$app->get($id);
+
+            if($component instanceof IBackendComponent)
             {
-                foreach ($group['items'] as $itemData)
+                $this->stdout("\tInit backend {$id}\n");
+                foreach ($component->getMenu()->data as $itemData)
                 {
-                    if (!is_array($itemData))
-                    {
-                        continue;
-                    }
-                    if (!isset($itemData['url']))
-                    {
-                        continue;
-                    }
-                    $url = $itemData['url'][0];
-                    if (!is_array($url))
-                    {
-                        continue;
-                    }
-                    /**
-                     * @var $controller \yii\web\Controller
-                     */
-                    list($controller, $route) = \Yii::$app->createController($url);
-                    //print_r("---------");
-                    //print_r($controller);die;
+                    $this->_initMenuItem($itemData);
+                }
+
+            }
+        }
+
+        return $this;
+    }
+
+    protected function _initMenuItem($itemData = null)
+    {
+        if (!is_array($itemData))
+        {
+            return false;
+        }
+
+        if ($url = ArrayHelper::getValue($itemData, 'url'))
+        {
+
+            if (is_array($url))
+            {
+
+                $url = $url[0];
+                if (!$url || !is_string($url))
+                {
+                    return false;
+                }
+
+                /**
+                 * @var $controller \yii\web\Controller|IHasPermissions
+                 */
+                if ($result = \Yii::$app->createController($url))
+                {
+                    list($controller, $route) = $result;
+
                     if ($controller)
                     {
-                        if ($controller instanceof AdminController)
+                        if ($controller instanceof IHasPermissions)
                         {
-                            //Привилегия доступу к админке
-                            if (!$adminAccess = $auth->getPermission($controller->permissionName))
-                            {
-                                $adminAccess = $auth->createPermission($controller->permissionName);
-                                $adminAccess->description = 'Администрирование | ' . $controller->name;
-                                $auth->add($adminAccess);
-                            }
+                            $controller->isAllow;
+
                         }
                     }
+                } else
+                {
+                    $this->stdout("\t\tnot create: {$url}\n", Console::FG_RED);
                 }
             }
         }
+
+        if ($items = ArrayHelper::getValue($itemData, 'items'))
+        {
+            if (is_array($items))
+            {
+                foreach ($items as $item)
+                {
+                    $this->_initMenuItem($item);
+                }
+            }
+        }
+
         return $this;
     }
 }
