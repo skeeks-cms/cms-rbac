@@ -530,12 +530,13 @@ class InitController extends Controller
                 {
                     list($controller, $route) = $result;
 
+                    $this->stdout("\t\tcreated: {$url}\n", Console::FG_GREEN);
+
                     if ($controller)
                     {
                         if ($controller instanceof IHasPermissions)
                         {
                             $controller->isAllow;
-
                         }
                     }
                 } else
