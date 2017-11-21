@@ -1,7 +1,7 @@
 Changelog
 ==============
 
-2.2.0
+2.2.0.pre
 -----------------
  * Change configuration authManager
  
