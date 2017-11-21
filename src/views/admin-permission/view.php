@@ -12,10 +12,10 @@ $this->params['breadcrumbs'][] = $this->title;*/
 ?>
     <div class="auth-item-view">
 
-        <!--<h1><?/*= Html::encode($this->title) */ ?></h1>
+        <!--<h1><? /*= Html::encode($this->title) */ ?></h1>
 
     <p>
-        <?/*= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) */ ?>
+        <? /*= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->name], ['class' => 'btn btn-primary']) */ ?>
         <?php
         /*        echo Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->name], [
                     'class' => 'btn btn-danger',

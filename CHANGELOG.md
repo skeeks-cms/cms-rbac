@@ -3,6 +3,7 @@ Changelog
 
 2.2.0.pre
 -----------------
+ * Code style
  * Change configuration authManager
  
 2.1.1

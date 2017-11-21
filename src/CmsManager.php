@@ -24,7 +24,8 @@ class CmsManager extends \yii\rbac\DbManager
     /**
      * @throws \yii\base\InvalidConfigException
      */
-    public function init() {
+    public function init()
+    {
         if ($this->config && !is_array($this->config)) {
             throw new InvalidConfigException('Config must be array');
         }

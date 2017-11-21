@@ -93,6 +93,23 @@ class AdminPermissionController extends AdminModelEditorController
         return $this->_model;
     }
 
+    /**
+     * Finds the AuthItem model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param  string $id
+     * @return AuthItem      the loaded model
+     * @throws HttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        $item = Yii::$app->getAuthManager()->getPermission($id);
+        if ($item) {
+            return new AuthItem($item);
+        } else {
+            throw new NotFoundHttpException(\Yii::t('app', 'The requested page does not exist.'));
+        }
+    }
+
     public function actionUpdateData()
     {
         $rr = new RequestResponse();
@@ -113,7 +130,6 @@ class AdminPermissionController extends AdminModelEditorController
         }
         return [];
     }
-
 
     protected function _initMenuItem($itemData = null)
     {
@@ -364,24 +380,6 @@ class AdminPermissionController extends AdminModelEditorController
         }
         return Html::renderSelectOptions('', array_filter($result));
     }
-
-    /**
-     * Finds the AuthItem model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param  string $id
-     * @return AuthItem      the loaded model
-     * @throws HttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        $item = Yii::$app->getAuthManager()->getPermission($id);
-        if ($item) {
-            return new AuthItem($item);
-        } else {
-            throw new NotFoundHttpException(\Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
-
 
     /**
      * Выбор файла
