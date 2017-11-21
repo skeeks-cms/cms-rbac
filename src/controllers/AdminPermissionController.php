@@ -105,7 +105,6 @@ class AdminPermissionController extends AdminModelEditorController
                     {
                         $this->_initMenuItem($itemData);
                     }
-
                 }
             }
 
@@ -159,12 +158,12 @@ class AdminPermissionController extends AdminModelEditorController
                                 }
                             }
                         }
-
-
                     }
                 }
             }
         }
+
+
 
         if ($items = ArrayHelper::getValue($itemData, 'items'))
         {

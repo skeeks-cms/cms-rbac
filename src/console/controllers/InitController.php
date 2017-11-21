@@ -17,6 +17,7 @@ use skeeks\cms\rbac\CmsManager;
 use Yii;
 use yii\base\Exception;
 use yii\console\Controller;
+use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -124,14 +125,17 @@ class InitController extends Controller
         {
             return false;
         }
+
         if ($ruleExist = \Yii::$app->authManager->getRule($rule->name))
         {
             return $ruleExist;
         }
+
         if (\Yii::$app->authManager->add($rule))
         {
             return $rule;
         }
+
         return false;
     }
     /**
@@ -523,26 +527,33 @@ class InitController extends Controller
                     return false;
                 }
 
-                /**
-                 * @var $controller \yii\web\Controller|IHasPermissions
-                 */
-                if ($result = \Yii::$app->createController($url))
+                try
                 {
-                    list($controller, $route) = $result;
-
-                    $this->stdout("\t\tcreated: {$url}\n", Console::FG_GREEN);
-
-                    if ($controller)
+                    /**
+                     * @var $controller \yii\web\Controller|IHasPermissions
+                     */
+                    if ($result = \Yii::$app->createController($url))
                     {
-                        if ($controller instanceof IHasPermissions)
+                        list($controller, $route) = $result;
+
+                        $this->stdout("\t\tcreated: {$url}\n", Console::FG_GREEN);
+
+                        if ($controller)
                         {
-                            $controller->isAllow;
+                            if ($controller instanceof IHasPermissions)
+                            {
+                                $controller->isAllow;
+                            }
                         }
+                    } else
+                    {
+                        $this->stdout("\t\tnot create: {$url}\n", Console::FG_RED);
                     }
-                } else
+                } catch (\Exception $e)
                 {
-                    $this->stdout("\t\tnot create: {$url}\n", Console::FG_RED);
+                    $this->stdout("\t\t{$e->getMessage()}\n", Console::FG_RED);
                 }
+
             }
         }
 

@@ -5,7 +5,9 @@
  * @copyright 2010 SkeekS (СкикС)
  * @date 25.08.2015
  */
+
 namespace skeeks\cms\rbac\widgets\adminPermissionForRoles;
+
 use skeeks\cms\components\Cms;
 use skeeks\cms\helpers\UrlHelper;
 use skeeks\cms\modules\admin\components\UrlRule;
@@ -30,31 +32,29 @@ class AdminPermissionForRolesWidget extends Widget
     /**
      * @var string Привилегия которую необходимо назначать, и настраивать.
      */
-    public $permissionName        = "";
+    public $permissionName = "";
     public $permissionDescription = "";
-    public $label                 = "";
-    public $items                 = [];
-    public $notClosedRoles        = [CmsManager::ROLE_ROOT];
+    public $label = "";
+    public $items = [];
+    public $notClosedRoles = [CmsManager::ROLE_ROOT];
 
     /**
      * @var bool Проверят разрешение и создавать если его нет
      */
-    public $createPermission      = true;
+    public $createPermission = true;
 
 
     public function init()
     {
         parent::init();
 
-        if (!$this->items)
-        {
+        if (!$this->items) {
             $this->items = \yii\helpers\ArrayHelper::map(\Yii::$app->authManager->getRoles(), 'name', 'description');
         }
 
         $permission = \Yii::$app->authManager->getPermission($this->permissionName);
 
-        if ($this->createPermission && !$permission)
-        {
+        if ($this->createPermission && !$permission) {
             $permission = \Yii::$app->authManager->createPermission($this->permissionName);
             $permission->description = $this->permissionDescription;
 
@@ -62,14 +62,10 @@ class AdminPermissionForRolesWidget extends Widget
         }
 
 
-        if ($this->notClosedRoles && $permission)
-        {
-            foreach ($this->notClosedRoles as $roleName)
-            {
-                if ($role = \Yii::$app->authManager->getRole($roleName))
-                {
-                    if (!\Yii::$app->authManager->hasChild($role, $permission))
-                    {
+        if ($this->notClosedRoles && $permission) {
+            foreach ($this->notClosedRoles as $roleName) {
+                if ($role = \Yii::$app->authManager->getRole($roleName)) {
+                    if (!\Yii::$app->authManager->hasChild($role, $permission)) {
                         \Yii::$app->authManager->addChild($role, $permission);
                     }
                 }
@@ -93,10 +89,10 @@ class AdminPermissionForRolesWidget extends Widget
     public function getClientOptionsJson()
     {
         return Json::encode([
-            'id'                                => $this->id,
-            'permissionName'                    => $this->permissionName,
-            'notClosedRoles'                    => $this->notClosedRoles,
-            'backend'                           => Url::to(['/rbac/admin-permission/permission-for-role']),
+            'id' => $this->id,
+            'permissionName' => $this->permissionName,
+            'notClosedRoles' => $this->notClosedRoles,
+            'backend' => Url::to(['/rbac/admin-permission/permission-for-role']),
         ]);
     }
 
@@ -116,13 +112,10 @@ class AdminPermissionForRolesWidget extends Widget
     {
         $result = [];
 
-        if ($roles = \Yii::$app->authManager->getRoles())
-        {
-            foreach ($roles as $role)
-            {
+        if ($roles = \Yii::$app->authManager->getRoles()) {
+            foreach ($roles as $role) {
                 //Если у роли есть это разрешение
-                if (\Yii::$app->authManager->hasChild($role, $this->permission))
-                {
+                if (\Yii::$app->authManager->hasChild($role, $this->permission)) {
                     $result[] = $role->name;
                 }
             }
