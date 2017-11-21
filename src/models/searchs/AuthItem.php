@@ -7,10 +7,12 @@
  */
 
 namespace skeeks\cms\rbac\models\searchs;
+
 use Yii;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
 use yii\rbac\Item;
+
 /**
  * AuthItemSearch represents the model behind the search form about AuthItem.
  */
@@ -22,6 +24,7 @@ class AuthItem extends Model
     public $description;
     public $rule;
     public $data;
+
     /**
      * @inheritdoc
      */
@@ -32,6 +35,7 @@ class AuthItem extends Model
             [['type'], 'integer'],
         ];
     }
+
     /**
      * @inheritdoc
      */
@@ -46,6 +50,7 @@ class AuthItem extends Model
             'data' => Yii::t('app', 'Data'),
         ];
     }
+
     /**
      * Search authitem
      * @param array $params
@@ -77,7 +82,9 @@ class AuthItem extends Model
             $search = strtolower(trim($this->name));
             $desc = strtolower(trim($this->description));
             $items = array_filter($items, function ($item) use ($search, $desc) {
-                return (empty($search) || strpos(strtolower($item->name), $search) !== false) && ( empty($desc) || strpos(strtolower($item->description), $desc) !== false);
+                return (empty($search) || strpos(strtolower($item->name),
+                            $search) !== false) && (empty($desc) || strpos(strtolower($item->description),
+                            $desc) !== false);
             });
         }
         return new ArrayDataProvider([

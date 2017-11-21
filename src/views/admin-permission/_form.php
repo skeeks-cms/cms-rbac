@@ -1,7 +1,7 @@
 <?php
 
-use yii\helpers\Html;
 use skeeks\cms\modules\admin\widgets\ActiveForm;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $model skeeks\cms\models\AuthItem */
@@ -13,9 +13,9 @@ use skeeks\cms\modules\admin\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => 64]) ?>
 
-    <?= $form->field($model, 'description')->textarea(['rows' => 2])->label(\Yii::t('app','Description')) ?>
+    <?= $form->field($model, 'description')->textarea(['rows' => 2])->label(\Yii::t('app', 'Description')) ?>
 
-    <?/*= $form->field($model, 'ruleName')->widget(
+    <? /*= $form->field($model, 'ruleName')->widget(
         'yii\jui\AutoComplete',
         [
             'options' => [
@@ -25,7 +25,7 @@ use skeeks\cms\modules\admin\widgets\ActiveForm;
                 'source' => array_keys(Yii::$app->authManager->getRules()),
             ]
         ])
-    */?>
+    */ ?>
 
     <?= $form->field($model, 'ruleName')->widget(
         \skeeks\widget\chosen\Chosen::className(),
@@ -43,7 +43,7 @@ use skeeks\cms\modules\admin\widgets\ActiveForm;
         ])
     ?>
 
-    <?/*= $form->field($model, 'data')->textarea(['rows' => 6, 'readonly' => 'readonly'])->label(\Yii::t('app','Data')) */?>
+    <? /*= $form->field($model, 'data')->textarea(['rows' => 6, 'readonly' => 'readonly'])->label(\Yii::t('app','Data')) */ ?>
 
     <?= $form->buttonsCreateOrUpdate($model); ?>
 

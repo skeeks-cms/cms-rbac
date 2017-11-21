@@ -5,14 +5,15 @@
  * @copyright 2010 SkeekS (СкикС)
  * @date 20.04.2016
  */
+
 namespace skeeks\cms\rbac\console\controllers;
+
 use skeeks\cms\admin\AdminComponent;
 use skeeks\cms\backend\IBackendComponent;
 use skeeks\cms\IHasPermissions;
 use skeeks\cms\models\User;
 use skeeks\cms\modules\admin\components\UrlRule;
 use skeeks\cms\modules\admin\controllers\AdminController;
-use skeeks\cms\rbac\AuthorRule;
 use skeeks\cms\rbac\CmsManager;
 use Yii;
 use yii\base\Exception;
@@ -36,6 +37,7 @@ class InitController extends Controller
      * @var string the default command action.
      */
     public $defaultAction = 'init';
+
     /**
      * Загрузка конфига и применение правил
      */
@@ -46,6 +48,7 @@ class InitController extends Controller
         $this->initRootAssigning();
         $this->initRootUser();
     }
+
     /**
      * Загрузить и посмотреть данные конфига
      */
@@ -58,32 +61,27 @@ class InitController extends Controller
     {
         $this->stdout("Init root assigning \n", Console::BOLD);
         $roleRoot = \Yii::$app->authManager->getRole(CmsManager::ROLE_ROOT);
-        foreach (\Yii::$app->authManager->getPermissions() as $permission)
-        {
+        foreach (\Yii::$app->authManager->getPermissions() as $permission) {
             //$this->stdout("\t\tassign root permisssion: " . $permission->name);
-            try
-            {
+            try {
                 \Yii::$app->authManager->addChild($roleRoot, $permission);
                 //$this->stdout(' - success' . "\n");
-            } catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 //$this->stdout(' - already exist' . "\n");
             }
         };
 
-        foreach (\Yii::$app->authManager->getRoles() as $role)
-        {
+        foreach (\Yii::$app->authManager->getRoles() as $role) {
             //$this->stdout("\t\tassign root role: " . $role->name);
-            try
-            {
+            try {
                 \Yii::$app->authManager->addChild($roleRoot, $role);
                 //$this->stdout(' - success' . "\n");
-            } catch(\Exception $e)
-            {
+            } catch (\Exception $e) {
                 //$this->stdout(' - already exist' . "\n");
             }
         };
     }
+
     /**
      * Получение rules, permissions and data по всем расширениям и модулям
      */
@@ -91,8 +89,7 @@ class InitController extends Controller
     {
         $this->stdout("Init rules, permissions adn data from all modules and extensions\n\n", Console::BOLD);
         $this->stdout("\t1) Loading config\n", Console::FG_YELLOW);
-        if (!$config = $this->loadConfig())
-        {
+        if (!$config = $this->loadConfig()) {
             $this->stdout("Start script: not found data for rbac migrations", Console::FG_RED);
             die;
         }
@@ -101,6 +98,7 @@ class InitController extends Controller
         $this->stdout("\t3) Assigning roles, privileges, rules\n", Console::FG_YELLOW);
         $this->applyAssigningConfig($config);
     }
+
     /**
      * Применение одного правила по данным из конфига
      * @param $config
@@ -108,36 +106,31 @@ class InitController extends Controller
      */
     protected function _applyRule($config)
     {
-        if (!is_array($config))
-        {
+        if (!is_array($config)) {
             return false;
         }
-        if (!$calssName = ArrayHelper::getValue($config, 'class'))
-        {
+        if (!$calssName = ArrayHelper::getValue($config, 'class')) {
             return false;
         }
-        if (!class_exists($calssName))
-        {
+        if (!class_exists($calssName)) {
             return false;
         }
         $rule = new $calssName;
-        if (!$rule instanceof Rule)
-        {
+        if (!$rule instanceof Rule) {
             return false;
         }
 
-        if ($ruleExist = \Yii::$app->authManager->getRule($rule->name))
-        {
+        if ($ruleExist = \Yii::$app->authManager->getRule($rule->name)) {
             return $ruleExist;
         }
 
-        if (\Yii::$app->authManager->add($rule))
-        {
+        if (\Yii::$app->authManager->add($rule)) {
             return $rule;
         }
 
         return false;
     }
+
     /**
      * Применение одного правила по данным из конфига
      * @param $config
@@ -145,56 +138,41 @@ class InitController extends Controller
      */
     protected function _assignRole($config)
     {
-        if (!is_array($config))
-        {
+        if (!is_array($config)) {
             return false;
         }
-        if (!$name = ArrayHelper::getValue($config, 'name'))
-        {
+        if (!$name = ArrayHelper::getValue($config, 'name')) {
             return false;
         }
-        if (!$child = ArrayHelper::getValue($config, 'child'))
-        {
+        if (!$child = ArrayHelper::getValue($config, 'child')) {
             return false;
         }
-        if (!$role = \Yii::$app->authManager->getRole($name))
-        {
+        if (!$role = \Yii::$app->authManager->getRole($name)) {
             return false;
         }
-        if ($childRoles = ArrayHelper::getValue($child, 'roles'))
-        {
-            if ($childRoles)
-            {
-                foreach ($childRoles as $name)
-                {
-                    if ($roleChild = \Yii::$app->authManager->getRole($name))
-                    {
-                        try
-                        {
+        if ($childRoles = ArrayHelper::getValue($child, 'roles')) {
+            if ($childRoles) {
+                foreach ($childRoles as $name) {
+                    if ($roleChild = \Yii::$app->authManager->getRole($name)) {
+                        try {
                             \Yii::$app->authManager->addChild($role, $roleChild);
                             $this->stdout("\t\tassign child role: " . $name . ' - success' . "\n", Console::FG_GREEN);
-                        } catch(\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                             //$this->stdout(' - already exist'. "\n");
                         }
                     }
                 }
             }
         }
-        if ($childPermissions = ArrayHelper::getValue($child, 'permissions'))
-        {
-            if ($childPermissions)
-            {
-                foreach ($childPermissions as $name)
-                {
-                    if ($permissionChild = \Yii::$app->authManager->getPermission($name))
-                    {
-                        try
-                        {
+        if ($childPermissions = ArrayHelper::getValue($child, 'permissions')) {
+            if ($childPermissions) {
+                foreach ($childPermissions as $name) {
+                    if ($permissionChild = \Yii::$app->authManager->getPermission($name)) {
+                        try {
                             \Yii::$app->authManager->addChild($role, $permissionChild);
-                            $this->stdout("\t\tassign child permission: " . $name . " - success" . "\n", Console::FG_GREEN);
-                        } catch(\Exception $e)
-                        {
+                            $this->stdout("\t\tassign child permission: " . $name . " - success" . "\n",
+                                Console::FG_GREEN);
+                        } catch (\Exception $e) {
                             //$this->stdout(' - already exist'. "\n");
                         }
                     }
@@ -203,6 +181,7 @@ class InitController extends Controller
         }
         return $role;
     }
+
     /**
      * Применение одного правила по данным из конфига
      * @param $config
@@ -210,56 +189,41 @@ class InitController extends Controller
      */
     protected function _assignPermission($config)
     {
-        if (!is_array($config))
-        {
+        if (!is_array($config)) {
             return false;
         }
-        if (!$name = ArrayHelper::getValue($config, 'name'))
-        {
+        if (!$name = ArrayHelper::getValue($config, 'name')) {
             return false;
         }
-        if (!$child = ArrayHelper::getValue($config, 'child'))
-        {
+        if (!$child = ArrayHelper::getValue($config, 'child')) {
             return false;
         }
-        if (!$permission = \Yii::$app->authManager->getPermission($name))
-        {
+        if (!$permission = \Yii::$app->authManager->getPermission($name)) {
             return false;
         }
-        if ($childRoles = ArrayHelper::getValue($child, 'roles'))
-        {
-            if ($childRoles)
-            {
-                foreach ($childRoles as $name)
-                {
-                    if ($roleChild = \Yii::$app->authManager->getRole($name))
-                    {
-                        try
-                        {
+        if ($childRoles = ArrayHelper::getValue($child, 'roles')) {
+            if ($childRoles) {
+                foreach ($childRoles as $name) {
+                    if ($roleChild = \Yii::$app->authManager->getRole($name)) {
+                        try {
                             \Yii::$app->authManager->addChild($permission, $roleChild);
                             $this->stdout("\t\tassign child role: " . $name . ' - success' . "\n", Console::FG_GREEN);
-                        } catch(\Exception $e)
-                        {
+                        } catch (\Exception $e) {
                             //$this->stdout(' - already exist' . "\n");
                         }
                     }
                 }
             }
         }
-        if ($childPermissions = ArrayHelper::getValue($child, 'permissions'))
-        {
-            if ($childPermissions)
-            {
-                foreach ($childPermissions as $name)
-                {
-                    if ($permissionChild = \Yii::$app->authManager->getPermission($name))
-                    {
-                        try
-                        {
+        if ($childPermissions = ArrayHelper::getValue($child, 'permissions')) {
+            if ($childPermissions) {
+                foreach ($childPermissions as $name) {
+                    if ($permissionChild = \Yii::$app->authManager->getPermission($name)) {
+                        try {
                             \Yii::$app->authManager->addChild($permission, $permissionChild);
-                            $this->stdout("\t\tassign child permission: " . $name . ' - success' . "\n", Console::FG_GREEN);
-                        } catch(\Exception $e)
-                        {
+                            $this->stdout("\t\tassign child permission: " . $name . ' - success' . "\n",
+                                Console::FG_GREEN);
+                        } catch (\Exception $e) {
                             //$this->stdout(' - already exist' . "\n");
                         }
                     }
@@ -268,6 +232,7 @@ class InitController extends Controller
         }
         return $permission;
     }
+
     /**
      * Применение одного правила по данным из конфига
      * @param $config
@@ -275,28 +240,25 @@ class InitController extends Controller
      */
     protected function _applyRole($config)
     {
-        if (!is_array($config))
-        {
+        if (!is_array($config)) {
             return false;
         }
-        if (!$name = ArrayHelper::getValue($config, 'name'))
-        {
+        if (!$name = ArrayHelper::getValue($config, 'name')) {
             return false;
         }
         $description = ArrayHelper::getValue($config, 'description');
-        if ($role = \Yii::$app->authManager->getRole($name))
-        {
+        if ($role = \Yii::$app->authManager->getRole($name)) {
             return $role;
         }
         //Менеджер который может управлять только своими данными
         $role = \Yii::$app->authManager->createRole($name);
         $role->description = $description;
-        if (\Yii::$app->authManager->add($role))
-        {
+        if (\Yii::$app->authManager->add($role)) {
             return $role;
         }
         return false;
     }
+
     /**
      * Применение одного правила по данным из конфига
      * @param $config
@@ -304,109 +266,88 @@ class InitController extends Controller
      */
     protected function _applyPermission($config)
     {
-        if (!is_array($config))
-        {
+        if (!is_array($config)) {
             return false;
         }
-        if (!$name = ArrayHelper::getValue($config, 'name'))
-        {
+        if (!$name = ArrayHelper::getValue($config, 'name')) {
             return false;
         }
         $description = ArrayHelper::getValue($config, 'description');
         $ruleName = ArrayHelper::getValue($config, 'ruleName', '');
-        if ($role = \Yii::$app->authManager->getPermission($name))
-        {
+        if ($role = \Yii::$app->authManager->getPermission($name)) {
             return $role;
         }
         //Менеджер который может управлять только своими данными
         $role = \Yii::$app->authManager->createPermission($name);
-        if ($description)
-        {
-            $role->description  = $description;
+        if ($description) {
+            $role->description = $description;
         }
-        if ($ruleName)
-        {
-            $role->ruleName     = $ruleName;
+        if ($ruleName) {
+            $role->ruleName = $ruleName;
         }
-        if (\Yii::$app->authManager->add($role))
-        {
+        if (\Yii::$app->authManager->add($role)) {
             return $role;
         }
         return false;
     }
+
     /**
      * @param array $config
      */
     public function applyConfig($config = [])
     {
-        if ($rules = ArrayHelper::getValue($config, 'rules'))
-        {
+        if ($rules = ArrayHelper::getValue($config, 'rules')) {
             $this->stdout("\tInit rules: " . count($rules) . "\n");
-            foreach ($rules as $data)
-            {
-                if ($rule = $this->_applyRule($data))
-                {
+            foreach ($rules as $data) {
+                if ($rule = $this->_applyRule($data)) {
                     //$this->stdout("\t\t- success: " . $rule->name . "\n");
-                } else
-                {
+                } else {
                     //$this->stdout("\t\t- error config rule: " . Json::encode($data) . "\n");
                 }
             }
         }
-        if ($roles = ArrayHelper::getValue($config, 'roles'))
-        {
+        if ($roles = ArrayHelper::getValue($config, 'roles')) {
             $this->stdout("\tInit roles: " . count($roles) . "\n");
-            foreach ($roles as $data)
-            {
-                if ($role = $this->_applyRole($data))
-                {
+            foreach ($roles as $data) {
+                if ($role = $this->_applyRole($data)) {
                     //$this->stdout("\t\t- success: " . $role->name . "\n");
-                } else
-                {
+                } else {
                     //$this->stdout("\t\t- error config role: " . Json::encode($data) . "\n");
                 }
             }
         }
-        if ($permissions = ArrayHelper::getValue($config, 'permissions'))
-        {
+        if ($permissions = ArrayHelper::getValue($config, 'permissions')) {
             $this->stdout("\tInit permissions: " . count($permissions) . "\n");
-            foreach ($permissions as $data)
-            {
-                if ($permission = $this->_applyPermission($data))
-                {
+            foreach ($permissions as $data) {
+                if ($permission = $this->_applyPermission($data)) {
                     //$this->stdout("\t\t- success: " . $permission->name . "\n");
-                } else
-                {
+                } else {
                     //$this->stdout("\t\t- error config role: " . Json::encode($data) . "\n");
                 }
             }
         }
     }
+
     public function applyAssigningConfig($config)
     {
-        if ($roles = ArrayHelper::getValue($config, 'roles'))
-        {
+        if ($roles = ArrayHelper::getValue($config, 'roles')) {
             $this->stdout("\tAssining roles: " . count($roles) . "\n");
-            foreach ($roles as $data)
-            {
-                if ($role = $this->_assignRole($data))
-                {
+            foreach ($roles as $data) {
+                if ($role = $this->_assignRole($data)) {
                     //$this->stdout("\t- success assigned: " . $role->name . "\n");
                 }
             }
         }
-        if ($permissions = ArrayHelper::getValue($config, 'permissions'))
-        {
+        if ($permissions = ArrayHelper::getValue($config, 'permissions')) {
             $this->stdout("\tAssining permissions: " . count($roles) . "\n");
-            foreach ($permissions as $data)
-            {
-                if ($permission = $this->_assignPermission($data))
-                {
+            foreach ($permissions as $data) {
+                if ($permission = $this->_assignPermission($data)) {
                     //$this->stdout("\t- success assigned: " . $permission->name . "\n");
                 }
             }
         }
     }
+
     /**
      * Сканирование всех расширений и модулей и получение правил для rbac миграций
      * @return array
@@ -425,21 +366,17 @@ class InitController extends Controller
 
         $config = [];
 
-        foreach ($files as $permisssionsFile)
-        {
-            if (file_exists($permisssionsFile))
-            {
+        foreach ($files as $permisssionsFile) {
+            if (file_exists($permisssionsFile)) {
                 $this->stdout("\t- " . $permisssionsFile);
-                $cfg = (array) include $permisssionsFile;
-                if ($cfg)
-                {
+                $cfg = (array)include $permisssionsFile;
+                if ($cfg) {
                     $config = ArrayHelper::merge($config, $cfg);
                     $this->stdout("(rules: " . count(ArrayHelper::getValue($cfg, 'rules', [])) . '; ');
                     $this->stdout("roles: " . count(ArrayHelper::getValue($cfg, 'roles', [])) . '; ');
                     $this->stdout("permissions: " . count(ArrayHelper::getValue($cfg, 'permissions', [])) . ';)');
                     $this->stdout("\n");
-                } else
-                {
+                } else {
                     $this->stdout("(is empty data)");
                 }
             }
@@ -452,7 +389,8 @@ class InitController extends Controller
         $this->stdout("\n");
         return $config;
     }
-     /**
+
+    /**
      * Автоматическая генерация
      * @return $this
      */
@@ -461,10 +399,8 @@ class InitController extends Controller
         $this->stdout("Init root user \n", Console::BOLD);
         $root = User::findByUsername('root');
         $aManager = \Yii::$app->authManager;
-        if ($root && $aManager->getRole(CmsManager::ROLE_ROOT))
-        {
-            if (!$aManager->getAssignment(CmsManager::ROLE_ROOT, $root->primaryKey))
-            {
+        if ($root && $aManager->getRole(CmsManager::ROLE_ROOT)) {
+            if (!$aManager->getAssignment(CmsManager::ROLE_ROOT, $root->primaryKey)) {
                 $aManager->assign($aManager->getRole(CmsManager::ROLE_ROOT), $root->primaryKey);
             }
         }
@@ -490,15 +426,12 @@ class InitController extends Controller
         $webApplication = include_once \Yii::getAlias('@vendor/skeeks/cms/app-web-create.php');
         var_dump($webApplication);die;*/
 
-        foreach (Yii::$app->getComponents(true) as $id => $component)
-        {
+        foreach (Yii::$app->getComponents(true) as $id => $component) {
             $component = \Yii::$app->get($id);
 
-            if($component instanceof IBackendComponent)
-            {
+            if ($component instanceof IBackendComponent) {
                 $this->stdout("\tInit backend {$id}\n");
-                foreach ($component->getMenu()->data as $itemData)
-                {
+                foreach ($component->getMenu()->data as $itemData) {
                     $this->_initMenuItem($itemData);
                 }
 
@@ -510,59 +443,46 @@ class InitController extends Controller
 
     protected function _initMenuItem($itemData = null)
     {
-        if (!is_array($itemData))
-        {
+        if (!is_array($itemData)) {
             return false;
         }
 
-        if ($url = ArrayHelper::getValue($itemData, 'url'))
-        {
+        if ($url = ArrayHelper::getValue($itemData, 'url')) {
 
-            if (is_array($url))
-            {
+            if (is_array($url)) {
 
                 $url = $url[0];
-                if (!$url || !is_string($url))
-                {
+                if (!$url || !is_string($url)) {
                     return false;
                 }
 
-                try
-                {
+                try {
                     /**
                      * @var $controller \yii\web\Controller|IHasPermissions
                      */
-                    if ($result = \Yii::$app->createController($url))
-                    {
+                    if ($result = \Yii::$app->createController($url)) {
                         list($controller, $route) = $result;
 
                         $this->stdout("\t\tcreated: {$url}\n", Console::FG_GREEN);
 
-                        if ($controller)
-                        {
-                            if ($controller instanceof IHasPermissions)
-                            {
+                        if ($controller) {
+                            if ($controller instanceof IHasPermissions) {
                                 $controller->isAllow;
                             }
                         }
-                    } else
-                    {
+                    } else {
                         $this->stdout("\t\tnot create: {$url}\n", Console::FG_RED);
                     }
-                } catch (\Exception $e)
-                {
+                } catch (\Exception $e) {
                     $this->stdout("\t\t{$e->getMessage()}\n", Console::FG_RED);
                 }
 
             }
         }
 
-        if ($items = ArrayHelper::getValue($itemData, 'items'))
-        {
-            if (is_array($items))
-            {
-                foreach ($items as $item)
-                {
+        if ($items = ArrayHelper::getValue($itemData, 'items')) {
+            if (is_array($items)) {
+                foreach ($items as $item) {
                     $this->_initMenuItem($item);
                 }
             }

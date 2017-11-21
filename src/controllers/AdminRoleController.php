@@ -12,20 +12,20 @@
 namespace skeeks\cms\rbac\controllers;
 
 use skeeks\cms\helpers\RequestResponse;
-use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
-use skeeks\cms\rbac\models\AuthItem;
-use skeeks\cms\rbac\models\searchs\AuthItem as AuthItemSearch;
 use skeeks\cms\modules\admin\actions\AdminAction;
 use skeeks\cms\modules\admin\actions\modelEditor\AdminOneModelEditAction;
+use skeeks\cms\modules\admin\controllers\AdminModelEditorController;
 use skeeks\cms\rbac\CmsManager;
+use skeeks\cms\rbac\models\AuthItem;
+use skeeks\cms\rbac\models\searchs\AuthItem as AuthItemSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
+use yii\rbac\Item;
 use yii\rbac\Role;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
-use yii\rbac\Item;
-use Yii;
-use yii\helpers\Html;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 
@@ -36,54 +36,55 @@ class AdminRoleController extends AdminModelEditorController
 {
     public function init()
     {
-        $this->name                   = \Yii::t('app',"Managing Roles");
-        $this->modelShowAttribute     = "name";
-        $this->modelPkAttribute       = "name";
-        $this->modelClassName         = Role::className();
+        $this->name = \Yii::t('app', "Managing Roles");
+        $this->modelShowAttribute = "name";
+        $this->modelPkAttribute = "name";
+        $this->modelClassName = Role::className();
         parent::init();
     }
+
     public function actions()
     {
         return ArrayHelper::merge(parent::actions(), [
             'index' =>
-            [
-                'class'     => AdminAction::className(),
-                'callback'  => [$this, 'actionIndex']
-            ],
+                [
+                    'class' => AdminAction::className(),
+                    'callback' => [$this, 'actionIndex']
+                ],
             'view' =>
-            [
-                "class"     => AdminOneModelEditAction::className(),
-                "name"      => \Yii::t('app',"Watch"),
-                "icon"      => "glyphicon glyphicon-eye-open",
-                "callback"  => [$this, "actionView"],
-            ],
+                [
+                    "class" => AdminOneModelEditAction::className(),
+                    "name" => \Yii::t('app', "Watch"),
+                    "icon" => "glyphicon glyphicon-eye-open",
+                    "callback" => [$this, "actionView"],
+                ],
             'create' =>
-            [
-                'class'         => AdminAction::className(),
-                'callback'      => [$this, 'actionCreate']
-            ],
+                [
+                    'class' => AdminAction::className(),
+                    'callback' => [$this, 'actionCreate']
+                ],
             "update" =>
-            [
-                'class'         => AdminOneModelEditAction::className(),
-                'callback'      => [$this, 'actionUpdate']
-            ],
+                [
+                    'class' => AdminOneModelEditAction::className(),
+                    'callback' => [$this, 'actionUpdate']
+                ],
         ]);
     }
+
     /**
      * @return Role
      * @throws NotFoundHttpException
      */
     public function getModel()
     {
-        if ($this->_model === null)
-        {
-            if ($pk             = \Yii::$app->request->get($this->requestPkParamName))
-            {
-                $this->_model   = $this->findModel($pk);
+        if ($this->_model === null) {
+            if ($pk = \Yii::$app->request->get($this->requestPkParamName)) {
+                $this->_model = $this->findModel($pk);
             }
         }
         return $this->_model;
     }
+
     /**
      * Lists all AuthItem models.
      * @return mixed
@@ -93,11 +94,12 @@ class AdminRoleController extends AdminModelEditorController
         $searchModel = new AuthItemSearch(['type' => Item::TYPE_ROLE]);
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
         return $this->render('index', [
-                'dataProvider' => $dataProvider,
-                'searchModel' => $searchModel,
-                'controller' => $this,
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+            'controller' => $this,
         ]);
     }
+
     /**
      * Displays a single AuthItem model.
      * @param  string $id
@@ -127,21 +129,18 @@ class AdminRoleController extends AdminModelEditorController
                 continue;
             }
 
-            if (isset($name[0]))
-            {
-                $avaliable[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $role->description;
+            if (isset($name[0])) {
+                $avaliable[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name . ' — ' . $role->description;
             }
         }
         foreach ($authManager->getChildren($id) as $name => $child) {
             if ($child->type == Item::TYPE_ROLE) {
-                $assigned['Roles'][$name] = $name  . ' — ' . $child->description;
+                $assigned['Roles'][$name] = $name . ' — ' . $child->description;
             } else {
-                if (isset($name[0]))
-                {
-                    $assigned[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name  . ' — ' . $child->description;
-                } else
-                {
-                    $assigned['Permission'][$name] = $name  . ' — ' . $child->description;
+                if (isset($name[0])) {
+                    $assigned[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name . ' — ' . $child->description;
+                } else {
+                    $assigned['Permission'][$name] = $name . ' — ' . $child->description;
                 }
             }
         }
@@ -149,6 +148,7 @@ class AdminRoleController extends AdminModelEditorController
         $assigned = array_filter($assigned);
         return $this->render('view', ['model' => $model, 'avaliable' => $avaliable, 'assigned' => $assigned]);
     }
+
     /**
      * Creates a new AuthItem model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -158,8 +158,7 @@ class AdminRoleController extends AdminModelEditorController
     {
         $model = new AuthItem(null);
         $model->type = Item::TYPE_ROLE;
-        if (\Yii::$app->request->isAjax && !\Yii::$app->request->isPjax)
-        {
+        if (\Yii::$app->request->isAjax && !\Yii::$app->request->isPjax) {
             $model->load(\Yii::$app->request->post());
             \Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
@@ -170,6 +169,7 @@ class AdminRoleController extends AdminModelEditorController
             return $this->render('create', ['model' => $model,]);
         }
     }
+
     /**
      * Updates an existing AuthItem model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -181,24 +181,21 @@ class AdminRoleController extends AdminModelEditorController
         $model = $this->model;
         $id = $model->name;
         $model = $this->findModel($id);
-        if (\Yii::$app->request->isAjax && !\Yii::$app->request->isPjax)
-        {
+        if (\Yii::$app->request->isAjax && !\Yii::$app->request->isPjax) {
             $model->load(\Yii::$app->request->post());
             \Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($model);
         }
-        if (\Yii::$app->request->isAjax)
-        {
-            if ($model->load(\Yii::$app->request->post()) && $model->save())
-            {
+        if (\Yii::$app->request->isAjax) {
+            if ($model->load(\Yii::$app->request->post()) && $model->save()) {
                 \Yii::$app->getSession()->setFlash('success', \Yii::t('app', 'Saved successfully'));
-            } else
-            {
+            } else {
                 \Yii::$app->getSession()->setFlash('error', \Yii::t('app', 'Failed to save'));
             }
         }
         return $this->render('update', ['model' => $model,]);
     }
+
     /**
      * Deletes an existing Game model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -207,37 +204,31 @@ class AdminRoleController extends AdminModelEditorController
     public function actionDelete()
     {
         $rr = new RequestResponse();
-        if ($rr->isRequestAjaxPost())
-        {
-            try
-            {
-                $model  = $this->model;
-                $id     = $model->name;
-                $model  = $this->findModel($id);
-                if (!in_array($model->item->name, CmsManager::protectedRoles()))
-                {
-                    if (\Yii::$app->getAuthManager()->remove($model->item))
-                    {
-                        $rr->message = \Yii::t('app','Record deleted successfully');
+        if ($rr->isRequestAjaxPost()) {
+            try {
+                $model = $this->model;
+                $id = $model->name;
+                $model = $this->findModel($id);
+                if (!in_array($model->item->name, CmsManager::protectedRoles())) {
+                    if (\Yii::$app->getAuthManager()->remove($model->item)) {
+                        $rr->message = \Yii::t('app', 'Record deleted successfully');
                         $rr->success = true;
-                    } else
-                    {
-                        $rr->message = \Yii::t('app','Record deleted unsuccessfully');
+                    } else {
+                        $rr->message = \Yii::t('app', 'Record deleted unsuccessfully');
                         $rr->success = false;
                     }
-                } else
-                {
-                    $rr->message = \Yii::t('app','This entry can not be deleted!');
+                } else {
+                    $rr->message = \Yii::t('app', 'This entry can not be deleted!');
                     $rr->success = false;
                 }
-            } catch (\Exception $e)
-            {
+            } catch (\Exception $e) {
                 $rr->message = $e->getMessage();
                 $rr->success = false;
             }
-            return (array) $rr;
+            return (array)$rr;
         }
     }
+
     /**
      * Assign or remove items
      * @param string $id
@@ -256,7 +247,7 @@ class AdminRoleController extends AdminModelEditorController
         if ($action == 'assign') {
             foreach ($roles as $role) {
                 $child = $manager->getRole($role);
-                $child = $child ? : $manager->getPermission($role);
+                $child = $child ?: $manager->getPermission($role);
                 try {
                     $manager->addChild($parent, $child);
                 } catch (\Exception $e) {
@@ -264,11 +255,10 @@ class AdminRoleController extends AdminModelEditorController
                 }
             }
         } else {
-            if ($roles)
-            {
+            if ($roles) {
                 foreach ($roles as $role) {
                     $child = $manager->getRole($role);
-                    $child = $child ? : $manager->getPermission($role);
+                    $child = $child ?: $manager->getPermission($role);
                     try {
                         $manager->removeChild($parent, $child);
                     } catch (\Exception $e) {
@@ -279,10 +269,13 @@ class AdminRoleController extends AdminModelEditorController
 
         }
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        return [$this->actionRoleSearch($id, 'avaliable', $post['search_av']),
+        return [
+            $this->actionRoleSearch($id, 'avaliable', $post['search_av']),
             $this->actionRoleSearch($id, 'assigned', $post['search_asgn']),
-            $error];
+            $error
+        ];
     }
+
     /**
      * Search role
      * @param string $id
@@ -314,11 +307,9 @@ class AdminRoleController extends AdminModelEditorController
                     continue;
                 }
                 if (empty($term) or strpos($name, $term) !== false) {
-                    if (isset($name[0]))
-                    {
+                    if (isset($name[0])) {
                         $result[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name;
-                    } else
-                    {
+                    } else {
                         $result['Permission'][$name] = $name;
                     }
                 }
@@ -336,10 +327,11 @@ class AdminRoleController extends AdminModelEditorController
         }
         return Html::renderSelectOptions('', array_filter($result));
     }
+
     /**
      * Finds the AuthItem model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param  string        $id
+     * @param  string $id
      * @return AuthItem      the loaded model
      * @throws HttpException if the model cannot be found
      */
@@ -349,7 +341,7 @@ class AdminRoleController extends AdminModelEditorController
         if ($item) {
             return new AuthItem($item);
         } else {
-            throw new NotFoundHttpException(\Yii::t('app','The requested page does not exist.'));
+            throw new NotFoundHttpException(\Yii::t('app', 'The requested page does not exist.'));
         }
     }
 }

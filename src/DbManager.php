@@ -12,6 +12,8 @@
 namespace skeeks\cms\rbac;
 
 use Yii;
+use yii\caching\Cache;
+use yii\caching\TagDependency;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Query;
@@ -20,8 +22,6 @@ use yii\rbac\Item;
 use yii\rbac\Permission;
 use yii\rbac\Role;
 use yii\rbac\Rule;
-use yii\caching\Cache;
-use yii\caching\TagDependency;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -42,9 +42,9 @@ use yii\caching\TagDependency;
  */
 class DbManager extends CmsManager
 {
-    const PART_ITEMS    = 'sx.items';
+    const PART_ITEMS = 'sx.items';
     const PART_CHILDREN = 'sx.children';
-    const PART_RULES    = 'sx.rules';
+    const PART_RULES = 'sx.rules';
 
     //По умолчанию проверяем что может роль гостя
     public $defaultRoles = [self::ROLE_GUEST];
@@ -136,7 +136,8 @@ class DbManager extends CmsManager
 
         /** @var Item $item */
         $item = $this->_items[$itemName];
-        Yii::trace($item instanceof Role ? \Yii::t('app','Checking role').": $itemName" : \Yii::t('app','Checking permission')." : $itemName", __METHOD__);
+        Yii::trace($item instanceof Role ? \Yii::t('app', 'Checking role') . ": $itemName" : \Yii::t('app',
+                'Checking permission') . " : $itemName", __METHOD__);
 
         if (!$this->executeRule($user, $item, $params)) {
             return false;
@@ -147,7 +148,8 @@ class DbManager extends CmsManager
         }
 
         foreach ($this->_children as $parentName => $children) {
-            if (in_array($itemName, $children) && $this->checkAccessRecursive($user, $parentName, $params, $assignments)) {
+            if (in_array($itemName, $children) && $this->checkAccessRecursive($user, $parentName, $params,
+                    $assignments)) {
                 return true;
             }
         }

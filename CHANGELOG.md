@@ -3,6 +3,7 @@ Changelog
 
 2.1.1
 -----------------
+ * Code style
  * Change src dir
  
 2.1.0

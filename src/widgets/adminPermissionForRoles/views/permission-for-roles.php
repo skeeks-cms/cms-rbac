@@ -11,18 +11,18 @@
 <div id="<?= $widget->id; ?>" class="form-group">
     <? if ($widget->label): ?>
         <label><?= $widget->label; ?></label>
-    <? endif;  ?>
+    <? endif; ?>
 
-    <?/*= \yii\helpers\Html::checkboxList(
+    <? /*= \yii\helpers\Html::checkboxList(
         'sx-permission-' . $widget->permissionName,
         $widget->permissionRoles,
         \yii\helpers\ArrayHelper::map(\Yii::$app->authManager->getRoles(), 'name', 'description')
-    ); */?>
+    ); */ ?>
     <?= \skeeks\widget\chosen\Chosen::widget([
-        'multiple'          => true,
-        'name'              => 'sx-permission-' . $widget->permissionName,
-        'value'             => $widget->permissionRoles,
-        'items'             => $widget->items
+        'multiple' => true,
+        'name' => 'sx-permission-' . $widget->permissionName,
+        'value' => $widget->permissionRoles,
+        'items' => $widget->items
     ]); ?>
 
     <? $this->registerJs(<<<JS
@@ -31,5 +31,5 @@
         new sx.classes.PermissionForRoles({$widget->getClientOptionsJson()});
     })(sx, sx.$, sx._);
 JS
-)?>
+    ) ?>
 </div>

@@ -1,5 +1,5 @@
 <?php
 return [
-    "Roles"                 => "Роли",
-    "Privileges"            => "Привилегии",
+    "Roles" => "Роли",
+    "Privileges" => "Привилегии",
 ];

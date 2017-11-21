@@ -7,11 +7,13 @@
  */
 
 namespace skeeks\cms\rbac\models;
+
 use skeeks\cms\models\CmsUser;
 use Yii;
 use yii\db\ActiveRecord;
-use yii\rbac\Item;
 use yii\helpers\Json;
+use yii\rbac\Item;
+
 /**
  * This is the model class for table "tbl_auth_item".
  *

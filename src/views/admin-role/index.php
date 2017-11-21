@@ -7,11 +7,11 @@
 ?>
 <div class="role-index">
 
-<? $pjax = \skeeks\cms\modules\admin\widgets\Pjax::begin(); ?>
+    <? $pjax = \skeeks\cms\modules\admin\widgets\Pjax::begin(); ?>
 
     <?php echo $this->render('_search', [
-        'searchModel'   => $searchModel,
-        'dataProvider'  => $dataProvider
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider
     ]); ?>
 
     <?php
@@ -20,11 +20,11 @@
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'adminController' => $controller,
-        'pjax'              => $pjax,
+        'pjax' => $pjax,
         'settingsData' =>
-        [
-            'orderBy' => ''
-        ],
+            [
+                'orderBy' => ''
+            ],
         'columns' => [
 
             [
@@ -41,5 +41,5 @@
     ]);
 
     ?>
-<? $pjax::end(); ?>
+    <? $pjax::end(); ?>
 </div>

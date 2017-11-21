@@ -9,7 +9,7 @@ use yii\helpers\Html;
 ?>
 <div class="auth-item-update">
 
-	<?php
+    <?php
     echo $this->render('_form', [
         'model' => $model,
     ]);

@@ -7,10 +7,12 @@
  */
 
 namespace skeeks\cms\rbac\models;
+
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\rbac\Item;
 use yii\helpers\Json;
+use yii\rbac\Item;
+
 /**
  * This is the model class for table "tbl_auth_item".
  *
@@ -33,9 +35,10 @@ class AuthItem extends \yii\base\Model
      * @var Item
      */
     private $_item;
+
     /**
      * Initialize object
-     * @param Item  $item
+     * @param Item $item
      * @param array $config
      */
     public function __construct($item, $config = [])
@@ -50,15 +53,19 @@ class AuthItem extends \yii\base\Model
         }
         parent::__construct($config);
     }
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['ruleName'], 'in',
+            [
+                ['ruleName'],
+                'in',
                 'range' => array_keys(Yii::$app->authManager->getRules()),
-                'message' => 'Rule not exists'],
+                'message' => 'Rule not exists'
+            ],
             //[['name'], 'unique', 'targetAttribute' => array_keys(ArrayHelper::map(\Yii::$app->authManager->getRoles(), 'name', 'name')) ],
             [['name', 'type'], 'required'],
             [['type'], 'integer'],
@@ -66,19 +73,21 @@ class AuthItem extends \yii\base\Model
             [['name'], 'string', 'max' => 64]
         ];
     }
+
     /**
      * @inheritdoc
      */
     public function attributeLabels()
     {
         return [
-            'name' =>  Yii::t('app', 'Name'),
+            'name' => Yii::t('app', 'Name'),
             'type' => Yii::t('app', 'Type'),
             'description' => Yii::t('app', 'Description'),
             'ruleName' => Yii::t('app', 'Rule'),
             'data' => Yii::t('app', 'Data'),
         ];
     }
+
     /**
      * Check if is new record.
      * @return boolean
@@ -87,6 +96,7 @@ class AuthItem extends \yii\base\Model
     {
         return $this->_item === null;
     }
+
     /**
      * Find role
      * @param string $id
@@ -100,6 +110,7 @@ class AuthItem extends \yii\base\Model
         }
         return null;
     }
+
     /**
      * Save role to [[\yii\rbac\authManager]]
      * @return boolean
@@ -133,6 +144,7 @@ class AuthItem extends \yii\base\Model
             return false;
         }
     }
+
     /**
      * Get item
      * @return Item
@@ -141,6 +153,7 @@ class AuthItem extends \yii\base\Model
     {
         return $this->_item;
     }
+
     /**
      * Get type name
      * @param  mixed $type

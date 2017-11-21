@@ -5,7 +5,9 @@
  * @copyright 2010 SkeekS (СкикС)
  * @date 25.08.2015
  */
+
 namespace skeeks\cms\rbac\widgets\adminPermissionForRoles\assets;
+
 use skeeks\cms\base\AssetBundle;
 
 /**
@@ -16,13 +18,13 @@ class AdminPermissionForRolesWidgetAsset extends AssetBundle
 {
     public $sourcePath = '@skeeks/cms/rbac/widgets/adminPermissionForRoles/assets/src';
 
-    public $css             = [];
+    public $css = [];
 
-    public $js              = [
+    public $js = [
         'app.js'
     ];
 
-    public $depends         = [
+    public $depends = [
         'skeeks\sx\assets\Core'
     ];
 }

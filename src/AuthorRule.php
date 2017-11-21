@@ -8,6 +8,7 @@
  * @date 21.11.2014
  * @since 1.0.0
  */
+
 namespace skeeks\cms\rbac;
 
 use yii\rbac\Rule;
@@ -28,8 +29,7 @@ class AuthorRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        if (isset($params['model']) && isset($params['model']->created_by))
-        {
+        if (isset($params['model']) && isset($params['model']->created_by)) {
             return $params['model']->created_by == $user;
         }
 
