@@ -54,7 +54,7 @@ class InitController extends Controller
      */
     public function initRbacModules()
     {
-        $this->stdout("Init rules, permissions adn data from all modules and extensions\n\n", Console::BOLD);
+        $this->stdout("Init rules, permissions adn data from all modules and extensions\n", Console::BOLD);
         $this->stdout("\t1) Loading config\n", Console::FG_YELLOW);
         if (!$config = $this->loadConfig()) {
             $this->stdout("Start script: not found data for rbac migrations", Console::FG_RED);
@@ -88,7 +88,7 @@ class InitController extends Controller
     public function applyConfig($config = [])
     {
         if ($rules = ArrayHelper::getValue($config, 'rules')) {
-            $this->stdout("\tInit rules: " . count($rules) . "\n");
+            $this->stdout("\t\tInit rules: " . count($rules) . "\n");
             foreach ($rules as $data) {
                 if ($rule = $this->_applyRule($data)) {
                     //$this->stdout("\t\t- success: " . $rule->name . "\n");
@@ -98,7 +98,7 @@ class InitController extends Controller
             }
         }
         if ($roles = ArrayHelper::getValue($config, 'roles')) {
-            $this->stdout("\tInit roles: " . count($roles) . "\n");
+            $this->stdout("\t\tInit roles: " . count($roles) . "\n");
             foreach ($roles as $data) {
                 if ($role = $this->_applyRole($data)) {
                     //$this->stdout("\t\t- success: " . $role->name . "\n");
@@ -108,7 +108,7 @@ class InitController extends Controller
             }
         }
         if ($permissions = ArrayHelper::getValue($config, 'permissions')) {
-            $this->stdout("\tInit permissions: " . count($permissions) . "\n");
+            $this->stdout("\t\tInit permissions: " . count($permissions) . "\n");
             foreach ($permissions as $data) {
                 if ($permission = $this->_applyPermission($data)) {
                     //$this->stdout("\t\t- success: " . $permission->name . "\n");
@@ -212,7 +212,7 @@ class InitController extends Controller
     public function applyAssigningConfig($config)
     {
         if ($roles = ArrayHelper::getValue($config, 'roles')) {
-            $this->stdout("\tAssining roles: " . count($roles) . "\n");
+            $this->stdout("\t\tAssining roles: " . count($roles) . "\n");
             foreach ($roles as $data) {
                 if ($role = $this->_assignRole($data)) {
                     //$this->stdout("\t- success assigned: " . $role->name . "\n");
@@ -220,7 +220,7 @@ class InitController extends Controller
             }
         }
         if ($permissions = ArrayHelper::getValue($config, 'permissions')) {
-            $this->stdout("\tAssining permissions: " . count($roles) . "\n");
+            $this->stdout("\t\tAssining permissions: " . count($roles) . "\n");
             foreach ($permissions as $data) {
                 if ($permission = $this->_assignPermission($data)) {
                     //$this->stdout("\t- success assigned: " . $permission->name . "\n");
@@ -333,7 +333,7 @@ class InitController extends Controller
 
     public function initBackendData()
     {
-        $this->stdout("Init backend data\n", Console::BOLD);
+        $this->stdout("\t3)Init backend data\n", Console::FG_YELLOW);
 
         $auth = Yii::$app->authManager;
         //print_r(\Yii::getAlias('@vendor/skeeks/cms/app-web-create.php'));die;
@@ -353,7 +353,7 @@ class InitController extends Controller
             $component = \Yii::$app->get($id);
 
             if ($component instanceof IBackendComponent) {
-                $this->stdout("\tInit backend {$id}\n");
+                $this->stdout("\t\tInit backend {$id}\n");
                 foreach ($component->getMenu()->data as $itemData) {
                     $this->_initMenuItem($itemData);
                 }
@@ -394,10 +394,10 @@ class InitController extends Controller
                             }
                         }
                     } else {
-                        $this->stdout("\t\tnot create: {$url}\n", Console::FG_RED);
+                        //$this->stdout("\t\tnot create: {$url}\n", Console::FG_RED);
                     }
                 } catch (\Exception $e) {
-                    $this->stdout("\t\t{$e->getMessage()}\n", Console::FG_RED);
+                    //$this->stdout("\t\t{$e->getMessage()}\n", Console::FG_RED);
                 }
 
             }
@@ -416,7 +416,7 @@ class InitController extends Controller
 
     public function initRootAssigning()
     {
-        $this->stdout("Init root assigning \n", Console::BOLD);
+        $this->stdout("\t5) Init root assigning \n", Console::FG_YELLOW);
         $roleRoot = \Yii::$app->authManager->getRole(CmsManager::ROLE_ROOT);
         foreach (\Yii::$app->authManager->getPermissions() as $permission) {
             //$this->stdout("\t\tassign root permisssion: " . $permission->name);
@@ -445,7 +445,7 @@ class InitController extends Controller
      */
     protected function initRootUser()
     {
-        $this->stdout("Init root user \n", Console::BOLD);
+        $this->stdout("\t6) Init root user \n", Console::FG_YELLOW);
         $root = User::findByUsername('root');
         $aManager = \Yii::$app->authManager;
         if ($root && $aManager->getRole(CmsManager::ROLE_ROOT)) {
