@@ -354,33 +354,7 @@ class InitController extends Controller
      */
     public function loadConfig()
     {
-
-
-        $files = \skeeks\cms\helpers\FileHelper::findExtensionsFiles(['/config/permissions.php']);
-        $files = array_unique(array_merge(
-            [
-                \Yii::getAlias('@app/config/permissions.php'),
-                \Yii::getAlias('@common/config/permissions.php'),
-            ], $files
-        ));
-
-        $config = [];
-
-        foreach ($files as $permisssionsFile) {
-            if (file_exists($permisssionsFile)) {
-                $this->stdout("\t- " . $permisssionsFile);
-                $cfg = (array)include $permisssionsFile;
-                if ($cfg) {
-                    $config = ArrayHelper::merge($config, $cfg);
-                    $this->stdout("(rules: " . count(ArrayHelper::getValue($cfg, 'rules', [])) . '; ');
-                    $this->stdout("roles: " . count(ArrayHelper::getValue($cfg, 'roles', [])) . '; ');
-                    $this->stdout("permissions: " . count(ArrayHelper::getValue($cfg, 'permissions', [])) . ';)');
-                    $this->stdout("\n");
-                } else {
-                    $this->stdout("(is empty data)");
-                }
-            }
-        }
+        $config = \Yii::$app->authManager->config;
 
         $this->stdout("\tAll config is ready: ", Console::FG_GREEN);
         $this->stdout(" (rules: " . count(ArrayHelper::getValue($config, 'rules', [])) . ';');

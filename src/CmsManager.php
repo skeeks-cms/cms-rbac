@@ -8,12 +8,29 @@
 
 namespace skeeks\cms\rbac;
 
+use yii\base\InvalidConfigException;
+
 /**
  * Class CmsManager
  * @package skeeks\cms\rbac
  */
 class CmsManager extends \yii\rbac\DbManager
 {
+    /**
+     * @var array
+     */
+    public $config = [];
+
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function init() {
+        if ($this->config && !is_array($this->config)) {
+            throw new InvalidConfigException('Config must be array');
+        }
+        parent::init();
+    }
+
     /**
      * Доступ к админке
      */
@@ -64,4 +81,5 @@ class CmsManager extends \yii\rbac\DbManager
             static::PERMISSION_CONTROLL_PANEL,
         ];
     }
+
 }

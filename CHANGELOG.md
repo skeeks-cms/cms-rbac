@@ -1,6 +1,10 @@
 Changelog
 ==============
 
+2.2.0
+-----------------
+ * Change configuration authManager
+ 
 2.1.1
 -----------------
  * Code style
