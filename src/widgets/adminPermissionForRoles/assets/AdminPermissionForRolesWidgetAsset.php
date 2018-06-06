@@ -25,6 +25,7 @@ class AdminPermissionForRolesWidgetAsset extends AssetBundle
     ];
 
     public $depends = [
-        'skeeks\sx\assets\Core'
+        'skeeks\sx\assets\Custom',
+        'skeeks\sx\assets\ComponentAjaxLoader'
     ];
 }
