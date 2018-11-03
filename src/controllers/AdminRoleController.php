@@ -55,7 +55,7 @@ class AdminRoleController extends AdminModelEditorController
                 [
                     "class" => AdminOneModelEditAction::className(),
                     "name" => \Yii::t('app', "Watch"),
-                    "icon" => "glyphicon glyphicon-eye-open",
+                    "icon" => "fa fa-eye",
                     "callback" => [$this, "actionView"],
                 ],
             'create' =>

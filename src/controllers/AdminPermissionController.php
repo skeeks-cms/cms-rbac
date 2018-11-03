@@ -59,7 +59,7 @@ class AdminPermissionController extends AdminModelEditorController
                 [
                     "class" => AdminOneModelEditAction::className(),
                     "name" => "Смотреть",
-                    "icon" => "glyphicon glyphicon-eye-open",
+                    "icon" => "fa fa-eye",
                     "callback" => [$this, "actionView"],
                 ],
             'create' =>
