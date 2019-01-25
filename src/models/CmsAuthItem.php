@@ -20,7 +20,7 @@ use yii\rbac\Item;
  * @property string $name
  * @property integer $type
  * @property string $description
- * @property string $ruleName
+ * @property string $rule_name
  * @property string $data
  *
  * @property CmsAuthAssignment[] $authAssignments
@@ -43,14 +43,14 @@ class CmsAuthItem extends ActiveRecord
     {
         return [
             [
-                ['ruleName'],
+                ['rule_name'],
                 'in',
                 'range' => array_keys(Yii::$app->authManager->getRules()),
                 'message' => 'Rule not exists'
             ],
             [['name', 'type'], 'required'],
             [['type'], 'integer'],
-            [['description', 'data', 'ruleName'], 'default'],
+            [['description', 'data', 'rule_name'], 'default'],
             [['name'], 'string', 'max' => 64]
         ];
     }
@@ -64,7 +64,7 @@ class CmsAuthItem extends ActiveRecord
             'name' => Yii::t('app', 'Name'),
             'type' => Yii::t('app', 'Type'),
             'description' => Yii::t('app', 'Description'),
-            'ruleName' => Yii::t('app', 'Rule'),
+            'rule_name' => Yii::t('app', 'Rule'),
             'data' => Yii::t('app', 'Data'),
         ];
     }
