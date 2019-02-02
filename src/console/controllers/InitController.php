@@ -170,7 +170,7 @@ class InitController extends Controller
         }
         //Менеджер который может управлять только своими данными
         $role = \Yii::$app->authManager->createRole($name);
-        $role->description = $description;
+        $role->description = is_array($description) ? \Yii::t($description[0], $description[1]): $description;
         if (\Yii::$app->authManager->add($role)) {
             return $role;
         }
@@ -198,7 +198,7 @@ class InitController extends Controller
         //Менеджер который может управлять только своими данными
         $role = \Yii::$app->authManager->createPermission($name);
         if ($description) {
-            $role->description = $description;
+            $role->description = is_array($description) ? \Yii::t($description[0], $description[1]): $description;
         }
         if ($ruleName) {
             $role->ruleName = $ruleName;
