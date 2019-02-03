@@ -25,6 +25,10 @@
         'items' => $widget->items
     ]); ?>
 
+    <? if ($widget->permissionDescription) : ?>
+        <div style="font-size: 12px;"><?= $widget->permissionDescription; ?></div>
+    <? endif; ?>
+
     <? $this->registerJs(<<<JS
     (function(sx, $, _)
     {
