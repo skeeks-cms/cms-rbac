@@ -1,6 +1,10 @@
 Changelog
 ==============
 
+2.2.2
+-----------------
+ * Fixed
+ 
 2.2.1
 -----------------
  * Update icons to fontawesome for bootstrap4
