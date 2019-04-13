@@ -28,8 +28,7 @@ use yii\rbac\Rule;
 /**
  * Setting permissions
  *
- * Class RbacController
- * @package skeeks\cms\controllers
+ * @author Semenov Alexander <semenov@skeeks.com>
  */
 class InitController extends Controller
 {
