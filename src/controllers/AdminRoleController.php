@@ -68,6 +68,10 @@ class AdminRoleController extends AdminModelEditorController
                     'class' => AdminOneModelEditAction::className(),
                     'callback' => [$this, 'actionUpdate']
                 ],
+            "delete" =>
+                [
+                    'callback' => [$this, 'actionDelete']
+                ],
         ]);
     }
 

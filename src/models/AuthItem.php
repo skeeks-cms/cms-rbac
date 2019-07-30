@@ -170,4 +170,9 @@ class AuthItem extends \yii\base\Model
         }
         return $result[$type];
     }
+
+    public function delete()
+    {
+        \Yii::$app->authManager->remove()
+    }
 }

@@ -76,6 +76,11 @@ class AdminPermissionController extends AdminModelEditorController
                     "request" => "ajax",
                     'callback' => [$this, 'actionUpdateData']
                 ],
+
+            "delete" =>
+                [
+                    'callback' => [$this, 'actionDelete']
+                ],
         ]);
     }
 
