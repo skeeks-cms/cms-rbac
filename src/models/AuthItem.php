@@ -173,6 +173,6 @@ class AuthItem extends \yii\base\Model
 
     public function delete()
     {
-        \Yii::$app->authManager->remove()
+        \Yii::$app->authManager->remove();
     }
 }
