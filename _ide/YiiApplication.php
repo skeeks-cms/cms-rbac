@@ -8,9 +8,10 @@
 
 namespace yii\web;
 
+use skeeks\cms\rbac\CmsManager;
 /**
- * Class Application
- * @package yii\web
+ * @property CmsManager $authManager
+ * @author Semenov Alexander <semenov@skeeks.com>
  */
 class Application
 {

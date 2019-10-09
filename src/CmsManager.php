@@ -9,6 +9,7 @@
 namespace skeeks\cms\rbac;
 
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * Class CmsManager
@@ -32,6 +33,10 @@ class CmsManager extends \yii\rbac\DbManager
         parent::init();
     }
 
+    /**
+     * Доступ суперадминистратора
+     */
+    const PERMISSION_ROOT_ACCESS = 'cms.root';
     /**
      * Доступ к админке
      */
@@ -81,6 +86,31 @@ class CmsManager extends \yii\rbac\DbManager
             static::PERMISSION_ADMIN_ACCESS,
             static::PERMISSION_CONTROLL_PANEL,
         ];
+    }
+
+    /**
+     * @return array|\yii\rbac\Item[]|\yii\rbac\Role[]
+     */
+    public function getAvailableRoles()
+    {
+        if (!\Yii::$app->user->identity || !\Yii::$app->user->identity) {
+            return $this->getRoles();
+        }
+
+        $roles = $this->getRoles();
+
+        if (!$roles) {
+            return [];
+        }
+
+        $result = [];
+        if (\Yii::$app->user->can(self::PERMISSION_ROOT_ACCESS)) {
+            return $roles;
+        }
+
+        ArrayHelper::remove($roles, self::ROLE_ROOT);
+
+        return $roles;
     }
 
 }

@@ -44,6 +44,10 @@ class AdminPermissionController extends AdminModelEditorController
         $this->modelShowAttribute = "name";
         $this->modelPkAttribute = "name";
         $this->modelClassName = Permission::className();
+
+        $this->generateAccessActions = false;
+        $this->permissionName = CmsManager::PERMISSION_ROOT_ACCESS;
+
         parent::init();
     }
 
