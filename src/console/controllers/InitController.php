@@ -12,7 +12,6 @@ use skeeks\cms\admin\AdminComponent;
 use skeeks\cms\backend\IBackendComponent;
 use skeeks\cms\IHasPermissions;
 use skeeks\cms\models\User;
-use skeeks\cms\modules\admin\components\UrlRule;
 use skeeks\cms\modules\admin\controllers\AdminController;
 use skeeks\cms\rbac\CmsManager;
 use Yii;

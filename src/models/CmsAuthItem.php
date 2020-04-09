@@ -48,6 +48,7 @@ class CmsAuthItem extends ActiveRecord
                 'range' => array_keys(Yii::$app->authManager->getRules()),
                 'message' => 'Rule not exists'
             ],
+            [['name'], 'unique'],
             [['name', 'type'], 'required'],
             [['type'], 'integer'],
             [['description', 'data', 'rule_name'], 'default'],
@@ -61,11 +62,11 @@ class CmsAuthItem extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => Yii::t('app', 'Name'),
-            'type' => Yii::t('app', 'Type'),
-            'description' => Yii::t('app', 'Description'),
-            'rule_name' => Yii::t('app', 'Rule'),
-            'data' => Yii::t('app', 'Data'),
+            'name' => Yii::t('skeeks/rbac', 'Название'),
+            'type' => Yii::t('skeeks/rbac', 'Тип'),
+            'description' => Yii::t('skeeks/rbac', 'Описание'),
+            'rule_name' => Yii::t('skeeks/rbac', 'Правило'),
+            'data' => Yii::t('skeeks/rbac', 'Данные'),
         ];
     }
 

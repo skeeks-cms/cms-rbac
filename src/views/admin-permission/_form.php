@@ -45,6 +45,6 @@ use yii\helpers\Html;
 
     <? /*= $form->field($model, 'data')->textarea(['rows' => 6, 'readonly' => 'readonly'])->label(\Yii::t('app','Data')) */ ?>
 
-    <?= $form->buttonsCreateOrUpdate($model); ?>
+    <?= $form->buttonsStandart($model); ?>
 
     <?php ActiveForm::end(); ?>

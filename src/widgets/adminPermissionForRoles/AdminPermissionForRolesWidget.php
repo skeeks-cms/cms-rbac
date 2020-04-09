@@ -10,7 +10,6 @@ namespace skeeks\cms\rbac\widgets\adminPermissionForRoles;
 
 use skeeks\cms\components\Cms;
 use skeeks\cms\helpers\UrlHelper;
-use skeeks\cms\modules\admin\components\UrlRule;
 use skeeks\cms\rbac\CmsManager;
 use skeeks\cms\rbac\widgets\adminPermissionForRoles\assets\AdminPermissionForRolesWidgetAsset;
 use yii\base\Widget;
