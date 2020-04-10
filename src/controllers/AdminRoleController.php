@@ -17,6 +17,7 @@ use skeeks\cms\backend\grid\DefaultActionColumn;
 use skeeks\cms\helpers\RequestResponse;
 use skeeks\cms\modules\admin\actions\AdminAction;
 use skeeks\cms\modules\admin\actions\modelEditor\AdminOneModelEditAction;
+use skeeks\cms\queryfilters\QueryFiltersEvent;
 use skeeks\cms\rbac\CmsManager;
 use skeeks\cms\rbac\models\AuthItem;
 use skeeks\cms\rbac\models\CmsAuthItem;
@@ -58,7 +59,45 @@ class AdminRoleController extends BackendModelStandartController
             'index'  => [
                 "filters" => [
                     'visibleFilters' => [
-                        'name',
+                        'q',
+                    ],
+
+                    'filtersModel' => [
+                        'rules' => [
+                            ['q', 'safe'],
+                            ['has_image', 'safe'],
+                        ],
+
+                        'attributeDefines' => [
+                            'q',
+                            'has_image',
+                        ],
+
+                        'fields' => [
+                            'q' => [
+                                'label'          => 'Поиск',
+                                'elementOptions' => [
+                                    'placeholder' => 'Поиск',
+                                ],
+                                'on apply'       => function (QueryFiltersEvent $e) {
+                                    /**
+                                     * @var $query ActiveQuery
+                                     */
+                                    $query = $e->dataProvider->query;
+
+                                    if ($e->field->value) {
+
+                                        $query->andWhere([
+                                            'or',
+                                            ['like', CmsAuthItem::tableName().'.name', $e->field->value],
+                                            ['like', CmsAuthItem::tableName().'.description', $e->field->value],
+                                        ]);
+
+                                        //$query->groupBy([CmsSite::tableName().'.id']);
+                                    }
+                                },
+                            ],
+                        ],
                     ],
                 ],
                 'grid'    => [
@@ -151,19 +190,6 @@ class AdminRoleController extends BackendModelStandartController
             ],
         ];
     }
-    /**
-     * @return Role
-     * @throws NotFoundHttpException
-     */
-    public function getModel()
-    {
-        if ($this->_model === null) {
-            if ($pk = \Yii::$app->request->get($this->requestPkParamName)) {
-                $this->_model = $this->findModel($pk);
-            }
-        }
-        return $this->_model;
-    }
 
 
     /**
@@ -175,7 +201,6 @@ class AdminRoleController extends BackendModelStandartController
     {
         $model = $this->model;
         $id = $model->name;
-        $model = $this->findModel($id);
         $authManager = Yii::$app->getAuthManager();
         $avaliable = $assigned = [
             'Roles'      => [],
@@ -227,7 +252,6 @@ class AdminRoleController extends BackendModelStandartController
             try {
                 $model = $this->model;
                 $id = $model->name;
-                $model = $this->findModel($id);
                 if (!in_array($model->item->name, CmsManager::protectedRoles())) {
                     if (\Yii::$app->getAuthManager()->remove($model->item)) {
                         $rr->message = \Yii::t('app', 'Record deleted successfully');
@@ -350,20 +374,4 @@ class AdminRoleController extends BackendModelStandartController
         return Html::renderSelectOptions('', array_filter($result));
     }
 
-    /**
-     * Finds the AuthItem model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return AuthItem      the loaded model
-     * @throws HttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        $item = Yii::$app->getAuthManager()->getRole($id);
-        if ($item) {
-            return new AuthItem($item);
-        } else {
-            throw new NotFoundHttpException(\Yii::t('app', 'The requested page does not exist.'));
-        }
-    }
 }

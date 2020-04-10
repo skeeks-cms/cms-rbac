@@ -16,7 +16,7 @@ use yii\widgets\DetailView;
             'attributes' => [
                 'name',
                 'description:ntext',
-                'ruleName',
+                'rule_name',
                 'data:ntext',
             ],
         ]);
