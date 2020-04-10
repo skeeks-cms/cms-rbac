@@ -9,6 +9,7 @@
 namespace skeeks\cms\rbac\controllers;
 
 use skeeks\cms\backend\actions\BackendModelAction;
+use skeeks\cms\backend\BackendAction;
 use skeeks\cms\backend\controllers\BackendModelStandartController;
 use skeeks\cms\backend\IBackendComponent;
 use skeeks\cms\backend\IHasInfoActions;
@@ -117,7 +118,7 @@ class AdminPermissionController extends BackendModelStandartController
             ],
 
             "update-data" => [
-                "class"    => AdminAction::className(),
+                "class"    => BackendAction::className(),
                 "name"     => \Yii::t('app', "Update privileges"),
                 "icon"     => "glyphicon glyphicon-retweet",
                 "method"   => "post",
