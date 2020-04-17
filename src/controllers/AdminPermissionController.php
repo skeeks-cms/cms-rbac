@@ -48,7 +48,7 @@ class AdminPermissionController extends BackendModelStandartController
         $this->generateAccessActions = false;
         //$this->permissionName = CmsManager::PERMISSION_ROOT_ACCESS;
         $this->accessCallback = function () {
-            if (!\Yii::$app->cms->site->is_default) {
+            if (!\Yii::$app->skeeks->site->is_default) {
                 return false;
             }
             return \Yii::$app->user->can(CmsManager::PERMISSION_ROOT_ACCESS);
