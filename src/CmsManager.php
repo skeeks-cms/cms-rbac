@@ -65,7 +65,6 @@ class CmsManager extends \yii\rbac\DbManager
     const ROLE_MANGER = 'manager';
     const ROLE_EDITOR = 'editor';
     const ROLE_USER = 'user';
-    const ROLE_APPROVED = 'approved';
 
     static public function protectedRoles()
     {
@@ -76,7 +75,6 @@ class CmsManager extends \yii\rbac\DbManager
             static::ROLE_EDITOR,
             static::ROLE_USER,
             static::ROLE_GUEST,
-            static::ROLE_APPROVED,
         ];
     }
 
@@ -104,6 +102,8 @@ class CmsManager extends \yii\rbac\DbManager
         }
 
         $result = [];
+        ArrayHelper::remove($roles, self::ROLE_GUEST);
+
         if (\Yii::$app->user->can(self::PERMISSION_ROOT_ACCESS)) {
             return $roles;
         }
