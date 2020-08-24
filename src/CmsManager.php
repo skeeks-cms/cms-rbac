@@ -102,7 +102,7 @@ class CmsManager extends \yii\rbac\DbManager
         }
 
         $result = [];
-        ArrayHelper::remove($roles, self::ROLE_GUEST);
+        //ArrayHelper::remove($roles, self::ROLE_GUEST);
 
         if (\Yii::$app->user->can(self::PERMISSION_ROOT_ACCESS)) {
             return $roles;
