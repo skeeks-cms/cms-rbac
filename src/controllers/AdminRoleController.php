@@ -170,9 +170,9 @@ class AdminRoleController extends BackendModelStandartController
                 'class'    => AdminOneModelEditAction::className(),
                 'callback' => [$this, 'actionUpdate'],
             ],*/
-            "delete" => [
+            /*"delete" => [
                 'callback' => [$this, 'actionDelete'],
-            ],
+            ],*/
         ]);
     }
 
@@ -251,7 +251,7 @@ class AdminRoleController extends BackendModelStandartController
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @return mixed
      */
-    public function actionDelete()
+    /*public function actionDelete()
     {
         $rr = new RequestResponse();
         if ($rr->isRequestAjaxPost()) {
@@ -276,7 +276,7 @@ class AdminRoleController extends BackendModelStandartController
             }
             return (array)$rr;
         }
-    }
+    }*/
 
     /**
      * Assign or remove items
