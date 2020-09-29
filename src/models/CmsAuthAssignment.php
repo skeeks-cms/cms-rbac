@@ -8,6 +8,7 @@
 
 namespace skeeks\cms\rbac\models;
 
+use skeeks\cms\models\CmsSite;
 use skeeks\cms\models\CmsUser;
 use Yii;
 use yii\db\ActiveRecord;
@@ -25,6 +26,7 @@ use yii\rbac\Item;
  *
  * @property CmsAuthItem $authItem
  * @property CmsUser $user
+ * @property CmsSite $cmsSite
  */
 class CmsAuthAssignment extends ActiveRecord
 {
@@ -42,8 +44,8 @@ class CmsAuthAssignment extends ActiveRecord
     public function rules()
     {
         return [
-            [['item_name', 'user_id'], 'required'],
-            [['user_id', 'created_at'], 'integer'],
+            [['item_name', 'cms_user_id'], 'required'],
+            [['cms_user_id', 'created_at'], 'integer'],
             [['item_name'], 'string', 'max' => 64]
         ];
     }
@@ -55,7 +57,7 @@ class CmsAuthAssignment extends ActiveRecord
     {
         return [
             'item_name' => Yii::t('app', 'Item Name'),
-            'user_id' => Yii::t('app', 'User ID'),
+            'cms_user_id' => Yii::t('app', 'User ID'),
             'created_at' => Yii::t('app', 'Created At'),
         ];
     }
@@ -73,7 +75,17 @@ class CmsAuthAssignment extends ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(CmsUser::className(), ['id' => 'user_id']);
+        return $this->hasOne(CmsUser::className(), ['id' => 'cms_user_id']);
+    }
+    
+    /**
+     * Gets query for [[CmsSite]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCmsSite()
+    {
+        return $this->hasOne(CmsSite::className(), ['id' => 'cms_site_id']);
     }
 
 }

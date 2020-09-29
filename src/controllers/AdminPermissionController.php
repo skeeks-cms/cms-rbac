@@ -125,7 +125,7 @@ class AdminPermissionController extends BackendModelStandartController
 
             "update-data" => [
                 "class"    => BackendAction::className(),
-                "name"     => \Yii::t('app', "Update privileges"),
+                "name"     => \Yii::t('app', "Обновить привелегии"),
                 "icon"     => "glyphicon glyphicon-retweet",
                 "method"   => "post",
                 "request"  => "ajax",
@@ -201,7 +201,13 @@ class AdminPermissionController extends BackendModelStandartController
     {
         $rr = new RequestResponse();
         if ($rr->isRequestAjaxPost()) {
-            foreach (\Yii::$app->getComponents(true) as $id => $component) {
+
+            $cmd = "php yii rbac/init";
+
+            $process = new \Symfony\Component\Process\Process($cmd, \Yii::getAlias('@root'));
+            $process->run();
+
+            /*foreach (\Yii::$app->getComponents(true) as $id => $component) {
                 $component = \Yii::$app->get($id);
 
                 if ($component instanceof IBackendComponent) {
@@ -209,7 +215,7 @@ class AdminPermissionController extends BackendModelStandartController
                         $this->_initMenuItem($itemData);
                     }
                 }
-            }
+            }*/
 
             $rr->success = true;
             $rr->message = \Yii::t("app", "Update completed");

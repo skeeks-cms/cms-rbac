@@ -3,7 +3,7 @@ return [
 
     'components' => [
         'authManager' => [
-            'class' => 'skeeks\cms\rbac\DbManager',
+            'class' => 'skeeks\cms\rbac\CmsManager',
         ],
 
         'i18n' => [
