@@ -72,12 +72,6 @@ class CmsManager extends \yii\rbac\DbManager
      */
     const PERMISSION_ADMIN_ACCESS = 'cms.admin-access';
 
-    /**
-     * Понель управления сайтом из сайтовой части
-     */
-    const PERMISSION_CONTROLL_PANEL = 'cms.controll-panel-access';
-
-
     const PERMISSION_ADMIN_DASHBOARDS_EDIT = 'cms.admin-dashboards-edit';
 
     const PERMISSION_ELFINDER_USER_FILES = 'cms.elfinder-user-files';
@@ -110,7 +104,6 @@ class CmsManager extends \yii\rbac\DbManager
     {
         return [
             static::PERMISSION_ADMIN_ACCESS,
-            static::PERMISSION_CONTROLL_PANEL,
         ];
     }
 
