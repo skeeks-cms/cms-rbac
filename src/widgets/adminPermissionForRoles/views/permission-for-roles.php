@@ -18,7 +18,7 @@
         $widget->permissionRoles,
         \yii\helpers\ArrayHelper::map(\Yii::$app->authManager->getRoles(), 'name', 'description')
     ); */ ?>
-    <?= \skeeks\widget\chosen\Chosen::widget([
+    <?= \skeeks\cms\widgets\Select::widget([
         'multiple' => true,
         'name' => 'sx-permission-' . $widget->permissionName,
         'value' => $widget->permissionRoles,
