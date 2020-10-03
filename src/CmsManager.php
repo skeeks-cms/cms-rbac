@@ -67,6 +67,11 @@ class CmsManager extends \yii\rbac\DbManager
      * Доступ суперадминистратора
      */
     const PERMISSION_ROOT_ACCESS = 'cms.root';
+
+    /**
+     * Роль администратора
+     */
+    const PERMISSION_ROLE_ADMIN_ACCESS = 'cms.admin-role-access';
     /**
      * Доступ к админке
      */
@@ -314,15 +319,16 @@ class CmsManager extends \yii\rbac\DbManager
      * @return bool
      * @throws \yii\db\Exception
      */
-    protected function _parentRevoke($role, $userId) {
+    protected function _parentRevoke($role, $userId)
+    {
         if ($this->isEmptyUserId($userId)) {
             return false;
         }
 
-        unset($this->checkAccessAssignments[(string) $userId]);
+        unset($this->checkAccessAssignments[(string)$userId]);
         return $this->db->createCommand()
-            ->delete($this->assignmentTable, ['cms_user_id' => (string) $userId, 'cms_site_id' => $this->cmsSite->id, 'item_name' => $role->name])
-            ->execute() > 0;
+                ->delete($this->assignmentTable, ['cms_user_id' => (string)$userId, 'cms_site_id' => $this->cmsSite->id, 'item_name' => $role->name])
+                ->execute() > 0;
     }
     /**
      * @inheritdoc
@@ -777,8 +783,7 @@ class CmsManager extends \yii\rbac\DbManager
                 ->select('item_name')
                 ->from($this->assignmentTable)
                 ->where(['cms_user_id' => $userId])
-                ->andWhere(['cms_site_id' => $this->cmsSite->id])
-            ;
+                ->andWhere(['cms_site_id' => $this->cmsSite->id]);
 
             $this->_assignments[$userId] = $query->column($this->db);
         }
