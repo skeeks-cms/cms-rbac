@@ -66,6 +66,7 @@ class AdminPermissionController extends BackendModelStandartController
                         'name',
                     ],
                 ],
+                "backendShowings" => false,
                 'grid'    => [
                     'on init' => function (Event $e) {
                         /**

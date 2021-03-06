@@ -106,6 +106,8 @@ class AdminRoleController extends BackendModelStandartController
                         ],
                     ],
                 ],
+                "filters" => false,
+                "backendShowings" => false,
                 'grid'    => [
                     'on init' => function (Event $e) {
                         /**
