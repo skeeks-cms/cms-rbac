@@ -26,7 +26,6 @@ use yii\rbac\Item;
  *
  * @property CmsAuthItem $authItem
  * @property CmsUser $user
- * @property CmsSite $cmsSite
  */
 class CmsAuthAssignment extends ActiveRecord
 {
@@ -76,16 +75,6 @@ class CmsAuthAssignment extends ActiveRecord
     public function getUser()
     {
         return $this->hasOne(CmsUser::className(), ['id' => 'cms_user_id']);
-    }
-    
-    /**
-     * Gets query for [[CmsSite]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCmsSite()
-    {
-        return $this->hasOne(CmsSite::className(), ['id' => 'cms_site_id']);
     }
 
 }

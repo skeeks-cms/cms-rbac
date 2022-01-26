@@ -8,7 +8,6 @@
 
 namespace skeeks\cms\rbac;
 
-use skeeks\cms\models\CmsSite;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
@@ -24,8 +23,6 @@ use yii\rbac\Role;
 use yii\rbac\Rule;
 
 /**
- * @var CmsSite $cmsSite ;
- *
  * @author Semenov Alexander <semenov@skeeks.com>
  */
 class CmsManager extends \yii\rbac\DbManager
@@ -34,11 +31,6 @@ class CmsManager extends \yii\rbac\DbManager
      * @var array
      */
     public $config = [];
-
-    /**
-     * @var CmsSite
-     */
-    public $cmsSite = null;
 
     /**
      * @throws \yii\base\InvalidConfigException
@@ -56,10 +48,6 @@ class CmsManager extends \yii\rbac\DbManager
             $this->cache = Instance::ensure($this->cache, Cache::className());
         } else {
             $this->cache = null;
-        }
-
-        if ($this->cmsSite === null) {
-            $this->cmsSite = \Yii::$app->skeeks->site;
         }
     }
 
@@ -302,7 +290,6 @@ class CmsManager extends \yii\rbac\DbManager
                 'cms_user_id' => $assignment->userId,
                 'item_name'   => $assignment->roleName,
                 'created_at'  => $assignment->createdAt,
-                'cms_site_id' => $this->cmsSite->id,
             ])->execute();
 
         unset($this->checkAccessAssignments[(string)$userId]);
@@ -327,7 +314,8 @@ class CmsManager extends \yii\rbac\DbManager
 
         unset($this->checkAccessAssignments[(string)$userId]);
         return $this->db->createCommand()
-                ->delete($this->assignmentTable, ['cms_user_id' => (string)$userId, 'cms_site_id' => $this->cmsSite->id, 'item_name' => $role->name])
+                ->delete($this->assignmentTable, ['cms_user_id' => (string)$userId,
+                                                  'item_name' => $role->name])
                 ->execute() > 0;
     }
     /**
@@ -783,7 +771,7 @@ class CmsManager extends \yii\rbac\DbManager
                 ->select('item_name')
                 ->from($this->assignmentTable)
                 ->where(['cms_user_id' => $userId])
-                ->andWhere(['cms_site_id' => $this->cmsSite->id]);
+            ;
 
             $this->_assignments[$userId] = $query->column($this->db);
         }
