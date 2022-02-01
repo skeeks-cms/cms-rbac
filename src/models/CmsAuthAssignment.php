@@ -8,24 +8,21 @@
 
 namespace skeeks\cms\rbac\models;
 
-use skeeks\cms\models\CmsSite;
 use skeeks\cms\models\CmsUser;
 use Yii;
 use yii\db\ActiveRecord;
-use yii\helpers\Json;
-use yii\rbac\Item;
 
 /**
  * This is the model class for table "tbl_auth_item".
  *
- * @property string $name
- * @property integer $type
- * @property string $description
- * @property string $ruleName
- * @property string $data
+ * @property string      $name
+ * @property integer     $type
+ * @property string      $description
+ * @property string      $ruleName
+ * @property string      $data
  *
  * @property CmsAuthItem $authItem
- * @property CmsUser $user
+ * @property CmsUser     $user
  */
 class CmsAuthAssignment extends ActiveRecord
 {
@@ -45,7 +42,7 @@ class CmsAuthAssignment extends ActiveRecord
         return [
             [['item_name', 'cms_user_id'], 'required'],
             [['cms_user_id', 'created_at'], 'integer'],
-            [['item_name'], 'string', 'max' => 64]
+            [['item_name'], 'string', 'max' => 64],
         ];
     }
 
@@ -55,9 +52,9 @@ class CmsAuthAssignment extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'item_name' => Yii::t('app', 'Item Name'),
+            'item_name'   => Yii::t('app', 'Item Name'),
             'cms_user_id' => Yii::t('app', 'User ID'),
-            'created_at' => Yii::t('app', 'Created At'),
+            'created_at'  => Yii::t('app', 'Created At'),
         ];
     }
 
