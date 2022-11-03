@@ -80,6 +80,7 @@ class CmsManager extends \yii\rbac\DbManager
     const ROLE_MANGER = 'manager';
     const ROLE_EDITOR = 'editor';
     const ROLE_USER = 'user';
+    const ROLE_WORKER = 'worker';
 
     static public function protectedRoles()
     {
@@ -90,6 +91,7 @@ class CmsManager extends \yii\rbac\DbManager
             static::ROLE_EDITOR,
             static::ROLE_USER,
             static::ROLE_GUEST,
+            static::ROLE_WORKER,
         ];
     }
 
