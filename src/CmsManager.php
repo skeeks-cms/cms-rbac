@@ -57,7 +57,7 @@ class CmsManager extends \yii\rbac\DbManager
     const PERMISSION_ROOT_ACCESS = 'cms.root';
 
     /**
-     * Роль администратора
+     * Права администратора
      */
     const PERMISSION_ROLE_ADMIN_ACCESS = 'cms.admin-role-access';
     /**
@@ -67,31 +67,71 @@ class CmsManager extends \yii\rbac\DbManager
 
     const PERMISSION_ADMIN_DASHBOARDS_EDIT = 'cms.admin-dashboards-edit';
 
-    const PERMISSION_ELFINDER_USER_FILES = 'cms.elfinder-user-files';
-    const PERMISSION_ELFINDER_COMMON_PUBLIC_FILES = 'cms.elfinder-common-public-files';
-    const PERMISSION_ELFINDER_ADDITIONAL_FILES = 'cms.elfinder-additional-files';
-
     const PERMISSION_EDIT_VIEW_FILES = 'cms.edit-view-files';
 
-
+    //Гость
     const ROLE_GUEST = 'guest';
-    const ROLE_ROOT = 'root';
-    const ROLE_ADMIN = 'admin';
-    const ROLE_MANGER = 'manager';
-    const ROLE_EDITOR = 'editor';
+    //Зарегистрированныей пользователь
     const ROLE_USER = 'user';
+
+    //Сотрудник, имеет доступ в админку
     const ROLE_WORKER = 'worker';
+
+
+    //Редактор контента управляет контентом, только своим
+    const ROLE_EDITOR = 'editor';
+    /**
+     * Главный редактор контента, управляет всем контентом, удаляет только свой
+     */
+    const ROLE_MAIN_EDITOR = 'main_editor';
+
+    /**
+     * Менеджер - работает в CRM. Управляет клиентами, компаниями, сделками и заказами
+     */
+    const ROLE_MANGER = 'manager';
+    /**
+     * Маркетолог - доступны инструменты маркетинга. Настройка бонусов и скидок.
+     */
+    const ROLE_MARKETER = 'marketer';
+
+
+    //Администратор может управлять всем сайтом
+    const ROLE_ADMIN = 'admin';
+
+    //Суперпользователь!
+    const ROLE_ROOT = 'root';
+
+
+    /**
+     * @deprecated 
+     */
+    const PERMISSION_ELFINDER_COMMON_PUBLIC_FILES = 'cms.elfinder-common-public-files';
+    /**
+     * @deprecated 
+     */
+    const PERMISSION_ELFINDER_USER_FILES = 'cms.elfinder-user-files';
+    /**
+     * @deprecated 
+     */
+    const PERMISSION_ELFINDER_ADDITIONAL_FILES = 'cms.elfinder-additional-files';
+
 
     static public function protectedRoles()
     {
         return [
-            static::ROLE_ROOT,
-            static::ROLE_ADMIN,
-            static::ROLE_MANGER,
-            static::ROLE_EDITOR,
-            static::ROLE_USER,
             static::ROLE_GUEST,
             static::ROLE_WORKER,
+            static::ROLE_USER,
+
+            static::ROLE_EDITOR,
+            static::ROLE_MAIN_EDITOR,
+
+            static::ROLE_MANGER,
+            static::ROLE_MARKETER,
+
+            static::ROLE_ADMIN,
+            static::ROLE_ROOT,
+
         ];
     }
 
@@ -419,6 +459,28 @@ class CmsManager extends \yii\rbac\DbManager
             $this->_rules[$rule->name] = $rule;
         }
         $this->_invalidate(self::CACHE_PART_RULES);
+
+        return true;
+    }
+    /**
+     * @inheritdoc
+     */
+    public function updateRole($name, $rule)
+    {
+        parent::updateItem($name, $rule);
+        
+        $this->_invalidate(self::CACHE_PART_ITEMS);
+
+        return true;
+    }
+    /**
+     * @inheritdoc
+     */
+    public function updatePermission($name, $rule)
+    {
+        parent::updateItem($name, $rule);
+        
+        $this->_invalidate(self::CACHE_PART_ITEMS);
 
         return true;
     }
