@@ -13,15 +13,9 @@ namespace skeeks\cms\rbac\controllers;
 
 use skeeks\cms\backend\actions\BackendModelAction;
 use skeeks\cms\backend\controllers\BackendModelStandartController;
-use skeeks\cms\backend\grid\DefaultActionColumn;
-use skeeks\cms\helpers\RequestResponse;
-use skeeks\cms\modules\admin\actions\AdminAction;
-use skeeks\cms\modules\admin\actions\modelEditor\AdminOneModelEditAction;
 use skeeks\cms\queryfilters\QueryFiltersEvent;
 use skeeks\cms\rbac\CmsManager;
-use skeeks\cms\rbac\models\AuthItem;
 use skeeks\cms\rbac\models\CmsAuthItem;
-use skeeks\cms\rbac\models\searchs\AuthItem as AuthItemSearch;
 use skeeks\yii2\form\fields\HtmlBlock;
 use Yii;
 use yii\base\Event;
@@ -31,9 +25,6 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\rbac\Item;
 use yii\rbac\Role;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 
 /**
  * AuthItemController implements the CRUD actions for AuthItem model.
@@ -48,13 +39,7 @@ class AdminRoleController extends BackendModelStandartController
         $this->modelClassName = CmsAuthItem::class;
 
         $this->generateAccessActions = false;
-        //$this->permissionName = CmsManager::PERMISSION_ROOT_ACCESS;
-        $this->accessCallback = function () {
-            if (!\Yii::$app->skeeks->site->is_default) {
-                return false;
-            }
-            return \Yii::$app->user->can(CmsManager::PERMISSION_ROOT_ACCESS);
-        };
+        $this->permissionName = CmsManager::PERMISSION_ROLE_ADMIN_ACCESS;
 
         parent::init();
     }
@@ -63,7 +48,7 @@ class AdminRoleController extends BackendModelStandartController
     {
         return ArrayHelper::merge(parent::actions(), [
             'index'  => [
-                "filters" => [
+                "filters"         => [
                     'visibleFilters' => [
                         'q',
                     ],
@@ -106,9 +91,9 @@ class AdminRoleController extends BackendModelStandartController
                         ],
                     ],
                 ],
-                "filters" => false,
+                "filters"         => false,
                 "backendShowings" => false,
-                'grid'    => [
+                'grid'            => [
                     'on init' => function (Event $e) {
                         /**
                          * @var $dataProvider ActiveDataProvider
@@ -118,14 +103,14 @@ class AdminRoleController extends BackendModelStandartController
                         $dataProvider = $e->sender->dataProvider;
 
                         $query->andWhere([
-                            CmsAuthItem::tableName().".type" => Role::TYPE_ROLE
+                            CmsAuthItem::tableName().".type" => Role::TYPE_ROLE,
                         ]);
-                        
-                       /* $query->select([
-                            CmsContentProperty::tableName().'.*',
-                            //'countElementProperties' => new Expression("count(*)"),
-                            'countElementProperties' => $subQuery,
-                        ]);*/
+
+                        /* $query->select([
+                             CmsContentProperty::tableName().'.*',
+                             //'countElementProperties' => new Expression("count(*)"),
+                             'countElementProperties' => $subQuery,
+                         ]);*/
                     },
 
                     'defaultOrder'   => [
@@ -134,22 +119,22 @@ class AdminRoleController extends BackendModelStandartController
                     'visibleColumns' => [
                         'checkbox',
                         'actions',
-                        
+
                         'name',
                     ],
-                    
+
                     'columns' => [
                         'name' => [
                             'attribute' => 'name',
-                            'label' => \Yii::t('skeeks/rbac', 'Role'),
-                            'format' => 'raw',
-                            'value' => function (CmsAuthItem $cmsAuthItem) {
+                            'label'     => \Yii::t('skeeks/rbac', 'Role'),
+                            'format'    => 'raw',
+                            'value'     => function (CmsAuthItem $cmsAuthItem) {
                                 return \yii\helpers\Html::a($cmsAuthItem->name, "#", [
-                                    'class' => "sx-trigger-action",
-                                ]). "<div style='color: gray'>{$cmsAuthItem->description}</div>";
-                            }
-                        ]
-                    ]
+                                        'class' => "sx-trigger-action",
+                                    ])."<div style='color: gray'>{$cmsAuthItem->description}</div>";
+                            },
+                        ],
+                    ],
                 ],
             ],
             'view'   => [
@@ -182,18 +167,18 @@ class AdminRoleController extends BackendModelStandartController
     {
         $model = $action->model;
         $model->type = Item::TYPE_ROLE;
-        
+
         return [
             'name',
             'description',
             [
-                'class' => HtmlBlock::class,
+                'class'   => HtmlBlock::class,
                 'content' => '<div style="display: none">',
             ],
             'type',
 
             [
-                'class' => HtmlBlock::class,
+                'class'   => HtmlBlock::class,
                 'content' => '</div>',
             ],
         ];
@@ -359,9 +344,9 @@ class AdminRoleController extends BackendModelStandartController
                 }
                 if (empty($term) or strpos($name, $term) !== false) {
                     if (isset($name[0])) {
-                        $result[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name. " — ".$role->description;
+                        $result[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name." — ".$role->description;
                     } else {
-                        $result['Permission'][$name] = $name. " — ".$role->description;
+                        $result['Permission'][$name] = $name." — ".$role->description;
                     }
                 }
             }
@@ -369,12 +354,12 @@ class AdminRoleController extends BackendModelStandartController
             foreach ($authManager->getChildren($id) as $name => $child) {
                 if (empty($term) or strpos($name, $term) !== false) {
                     if ($child->type == Item::TYPE_ROLE) {
-                        $result['Roles'][$name] = $name. " — ".$child->description;
+                        $result['Roles'][$name] = $name." — ".$child->description;
                     } else {
                         if (isset($name[0])) {
-                            $result[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name. " — ".$child->description;
+                            $result[$name[0] === '/' ? 'Routes' : 'Permission'][$name] = $name." — ".$child->description;
                         }
-                        
+
                     }
                 }
             }

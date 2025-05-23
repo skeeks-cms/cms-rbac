@@ -11,6 +11,7 @@ namespace skeeks\cms\rbac\models;
 use skeeks\cms\models\CmsUser;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\rbac\Item;
 
@@ -86,5 +87,17 @@ class CmsAuthItem extends ActiveRecord
     {
         return $this->hasMany(CmsUser::className(), ['id' => 'user_id'])->viaTable('auth_assignment',
             ['item_name' => 'name']);
+    }
+
+    public function getItem()
+    {
+        $data = $this->toArray();
+        $data['ruleName'] = ArrayHelper::getValue($data, "rule_name");
+        $data['createdAt'] = ArrayHelper::getValue($data, "created_at");
+        $data['updatedAt'] = ArrayHelper::getValue($data, "updated_at");
+        ArrayHelper::remove($data, "rule_name");
+        ArrayHelper::remove($data, "created_at");
+        ArrayHelper::remove($data, "updated_at");
+        return new Item($data);
     }
 }

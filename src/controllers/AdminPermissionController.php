@@ -46,13 +46,7 @@ class AdminPermissionController extends BackendModelStandartController
         $this->modelClassName = CmsAuthItem::class;
 
         $this->generateAccessActions = false;
-        //$this->permissionName = CmsManager::PERMISSION_ROOT_ACCESS;
-        $this->accessCallback = function () {
-            if (!\Yii::$app->skeeks->site->is_default) {
-                return false;
-            }
-            return \Yii::$app->user->can(CmsManager::PERMISSION_ROOT_ACCESS);
-        };
+        $this->permissionName = CmsManager::PERMISSION_ROOT_ACCESS;
 
         parent::init();
     }
@@ -205,7 +199,7 @@ class AdminPermissionController extends BackendModelStandartController
 
             $cmd = "php yii rbac/init";
 
-            $process = new \Symfony\Component\Process\Process($cmd, \Yii::getAlias('@root'));
+            $process = new \Symfony\Component\Process\Process([$cmd], \Yii::getAlias('@root'));
             $process->run();
 
             /*foreach (\Yii::$app->getComponents(true) as $id => $component) {
