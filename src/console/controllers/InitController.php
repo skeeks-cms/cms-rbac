@@ -451,27 +451,50 @@ class InitController extends Controller
     
     protected function _getWebApplication() {
         if ($this->_web_application === null) {
-            $config = new \Yiisoft\Config\Config(
-                new \Yiisoft\Config\ConfigPaths(ROOT_DIR, "config"),
-                null,
-                [
-                    \Yiisoft\Config\Modifier\RecursiveMerge::groups('web', 'web-prod', 'params', "params-web-prod"),
-                ],
-                "params-web-prod"
-            );
-    
-            if ($config->has('web-prod')) {
-                $configData = $config->get('web-prod');
-            } else {
-                $configData = $config->get('web');
-            }
-    
-            ArrayHelper::remove($configData, "components.log.targets");
-            ArrayHelper::remove($configData, "bootstrap");
-            $this->_web_application = new \yii\web\Application($configData);
+            $this->_web_application = $this->_createWebApplication(defined('ENV') ? ENV : 'prod');
         }
         
         return $this->_web_application;
+    }
+
+    protected function _createWebApplication(string $environment): \yii\web\Application
+    {
+        $configPaths = new \Yiisoft\Config\ConfigPaths(ROOT_DIR, 'config');
+        $configProbe = new \Yiisoft\Config\Config($configPaths, null, [], null);
+        [$webGroup, $paramsGroup] = $this->_resolveWebConfigGroups($configProbe, $environment);
+
+        $mergeGroups = array_values(array_unique(['web', $webGroup, 'params', $paramsGroup]));
+        $config = new \Yiisoft\Config\Config(
+            $configPaths,
+            null,
+            [\Yiisoft\Config\Modifier\RecursiveMerge::groups(...$mergeGroups)],
+            $paramsGroup
+        );
+
+        $configData = $config->get($webGroup);
+        ArrayHelper::remove($configData, 'components.log.targets');
+        ArrayHelper::remove($configData, 'bootstrap');
+
+        return new \yii\web\Application($configData);
+    }
+
+    protected function _resolveWebConfigGroups(
+        \Yiisoft\Config\Config $config,
+        string $environment
+    ): array {
+        $candidates = [
+            ['web-' . $environment, 'params-web-' . $environment],
+            ['web-prod', 'params-web-prod'],
+            ['web', 'params'],
+        ];
+
+        foreach ($candidates as [$webGroup, $paramsGroup]) {
+            if ($config->has($webGroup) && $config->has($paramsGroup)) {
+                return [$webGroup, $paramsGroup];
+            }
+        }
+
+        throw new \RuntimeException('No complete web configuration group pair exists.');
     }
     
     protected function _initMenuItem($itemData = null)
