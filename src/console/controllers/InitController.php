@@ -475,6 +475,18 @@ class InitController extends Controller
         ArrayHelper::remove($configData, 'components.log.targets');
         ArrayHelper::remove($configData, 'bootstrap');
 
+        $webEntryScript = ROOT_DIR . '/frontend/web/index.php';
+        $requestConfig = ArrayHelper::getValue($configData, 'components.request', []);
+        if (is_file($webEntryScript) && is_array($requestConfig)) {
+            if (empty($requestConfig['scriptFile'])) {
+                $requestConfig['scriptFile'] = $webEntryScript;
+            }
+            if (empty($requestConfig['scriptUrl'])) {
+                $requestConfig['scriptUrl'] = '/index.php';
+            }
+            $configData['components']['request'] = $requestConfig;
+        }
+
         return new \yii\web\Application($configData);
     }
 
